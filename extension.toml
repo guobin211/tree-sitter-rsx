@@ -1,0 +1,7 @@
+id = "rsx"
+name = "Rsx"
+description = "Rsx support."
+version = "0.1.0"
+schema_version = 1
+authors = ["guobin211"]
+repository = "https://github.com/guobin211/rsx-zed"

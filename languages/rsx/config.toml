@@ -1,0 +1,16 @@
+name = "Rsx"
+code_fence_block_name = "rsx"
+grammar = "rsx"
+path_suffixes = ["rsx"]
+block_comment = ["<!-- ", " -->"]
+autoclose_before = ";:.,=}])>"
+brackets = [
+    { start = "{", end = "}", close = true, newline = true },
+    { start = "[", end = "]", close = true, newline = true },
+    { start = "(", end = ")", close = true, newline = true },
+    { start = "<", end = ">", close = true, newline = true, not_in = ["string", "comment"] },
+    { start = "\"", end = "\"", close = true, newline = false, not_in = ["string"] },
+    { start = "'", end = "'", close = true, newline = false, not_in = ["string", "comment"] },
+    { start = "`", end = "`", close = true, newline = false, not_in = ["string"] },
+]
+word_characters = ["-"]
