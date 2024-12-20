@@ -1,7 +1,33 @@
-# Zed Rsx
+# tree-sitter-svelte
 
-A Rsx extension for [Zed](https://zed.dev).
+[![CI][ci]](https://github.com/tree-sitter-grammars/tree-sitter-svelte/actions/workflows/ci.yml)
+[![discord][discord]](https://discord.gg/w7nTvsVJhm)
+[![matrix][matrix]](https://matrix.to/#/#tree-sitter-chat:matrix.org)
+[![crates][crates]](https://crates.io/crates/tree-sitter-svelte-ng)
+[![npm][npm]](https://www.npmjs.com/package/@tree-sitter-grammars/tree-sitter-svelte)
+[![pypi][pypi]](https://pypi.org/project/tree-sitter-svelte)
 
-## Development
+[Svelte](https://svelte.dev/) grammar for [tree-sitter](https://tree-sitter.github.io)
 
-To develop this extension, see the [Developing Extensions](https://zed.dev/docs/extensions/developing-extensions) section of the Zed docs.
+[ci]: https://img.shields.io/github/actions/workflow/status/tree-sitter-grammars/tree-sitter-svelte/ci.yml?logo=github&label=CI
+[discord]: https://img.shields.io/discord/1063097320771698699?logo=discord&label=discord
+[matrix]: https://img.shields.io/matrix/tree-sitter-chat%3Amatrix.org?logo=matrix&label=matrix
+[npm]: https://img.shields.io/npm/v/@tree-sitter-grammars/tree-sitter-svelte?logo=npm
+[crates]: https://img.shields.io/crates/v/tree-sitter-svelte-ng?logo=rust
+[pypi]: https://img.shields.io/pypi/v/tree-sitter-svelte?logo=pypi&logoColor=ffd242
+
+
+## Contributing
+
+
+### Building the parser
+If you have updated the `grammar.js` file, you can regenerate the parser code using:
+```bash
+tree-sitter generate --no-bindings
+```
+
+
+### Testing
+
+You can add tests to the `test/corpus` directory. The tests are run with
+`tree-sitter test`. Read about how to format tests in the treesitter guide for [`tree-sitter test`](https://tree-sitter.github.io/tree-sitter/creating-parsers#command-test)
