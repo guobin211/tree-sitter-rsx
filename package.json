@@ -1,17 +1,23 @@
 {
-  "name": "@tree-sitter-grammars/tree-sitter-rsx",
-  "version": "1.0.2",
-  "description": "rsx grammar for tree-sitter",
-  "repository": "github:tree-sitter-grammars/tree-sitter-rsx",
-  "publishConfig": {
-    "access": "public"
-  },
+  "name": "tree-sitter-rsx",
+  "version": "0.1.0",
+  "description": "rsx language",
+  "repository": "https://github.com/tree-sitter/tree-sitter-rsx",
   "license": "MIT",
-  "author": "Amaan Qureshi <amaanq12@gmail.com>",
+  "author": {
+    "name": "guobin211"
+  },
   "main": "bindings/node",
   "types": "bindings/node",
+  "keywords": [
+    "incremental",
+    "parsing",
+    "tree-sitter",
+    "rsx"
+  ],
   "files": [
     "grammar.js",
+    "tree-sitter.json",
     "binding.gyp",
     "prebuilds/**",
     "bindings/node/*",
@@ -19,51 +25,26 @@
     "src/**",
     "*.wasm"
   ],
-  "keywords": [
-    "incremental",
-    "parsing",
-    "tree-sitter",
-    "svelte"
-  ],
   "dependencies": {
-    "node-addon-api": "^8.1.0",
-    "node-gyp-build": "^4.8.2",
-    "tree-sitter-html": "^0.23.0"
+    "node-addon-api": "^8.2.1",
+    "node-gyp-build": "^4.8.2"
   },
   "devDependencies": {
-    "eslint": "^9.10.0",
-    "eslint-config-google": "^0.14.0",
     "prebuildify": "^6.0.1",
-    "tree-sitter-cli": "^0.23.0"
+    "tree-sitter-cli": "^0.24.5"
   },
   "peerDependencies": {
     "tree-sitter": "^0.21.1"
   },
   "peerDependenciesMeta": {
-    "tree_sitter": {
+    "tree-sitter": {
       "optional": true
     }
   },
   "scripts": {
     "install": "node-gyp-build",
-    "lint": "eslint grammar.js",
     "prestart": "tree-sitter build --wasm",
     "start": "tree-sitter playground",
     "test": "node --test bindings/node/*_test.js"
-  },
-  "tree-sitter": [
-    {
-      "scope": "source.svelte",
-      "injection-regex": "svelte",
-      "file-types": [
-        "svelte"
-      ],
-      "highlights": [
-        "queries/highlights.scm"
-      ],
-      "injections": [
-        "queries/injections.scm"
-      ]
-    }
-  ]
+  }
 }

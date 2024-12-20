@@ -1,15 +1,15 @@
-package tree_sitter_svelte_test
+package tree_sitter_rsx_test
 
 import (
 	"testing"
 
-	tree_sitter_svelte "github.com/tree-sitter-grammars/tree-sitter-svelte/bindings/go"
 	tree_sitter "github.com/tree-sitter/go-tree-sitter"
+	tree_sitter_rsx "github.com/tree-sitter/tree-sitter-rsx/bindings/go"
 )
 
 func TestCanLoadGrammar(t *testing.T) {
-	language := tree_sitter.NewLanguage(tree_sitter_svelte.Language())
+	language := tree_sitter.NewLanguage(tree_sitter_rsx.Language())
 	if language == nil {
-		t.Errorf("Error loading Svelte grammar")
+		t.Errorf("Error loading Rsx grammar")
 	}
 }

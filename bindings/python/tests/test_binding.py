@@ -1,11 +1,11 @@
 from unittest import TestCase
 
-import tree_sitter, tree_sitter_svelte
+import tree_sitter, tree_sitter_rsx
 
 
 class TestLanguage(TestCase):
     def test_can_load_grammar(self):
         try:
-            tree_sitter.Language(tree_sitter_svelte.language())
+            tree_sitter.Language(tree_sitter_rsx.language())
         except Exception:
-            self.fail("Error loading Svelte grammar")
+            self.fail("Error loading Rsx grammar")

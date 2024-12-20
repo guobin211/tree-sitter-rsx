@@ -2,44 +2,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "TreeSitterSvelte",
+    name: "TreeSitterRsx",
     products: [
-        .library(name: "TreeSitterSvelte", targets: ["TreeSitterSvelte"]),
+        .library(name: "TreeSitterRsx", targets: ["TreeSitterRsx"]),
     ],
     dependencies: [
         .package(url: "https://github.com/ChimeHQ/SwiftTreeSitter", from: "0.8.0"),
     ],
     targets: [
         .target(
-            name: "TreeSitterSvelte",
+            name: "TreeSitterRsx",
             dependencies: [],
             path: ".",
-            exclude: [
-                "Cargo.toml",
-                "Makefile",
-                "binding.gyp",
-                "bindings/c",
-                "bindings/go",
-                "bindings/node",
-                "bindings/python",
-                "bindings/rust",
-                "prebuilds",
-                "grammar.js",
-                "package.json",
-                "package-lock.json",
-                "pyproject.toml",
-                "setup.py",
-                "test",
-                "examples",
-                ".editorconfig",
-                ".github",
-                ".gitignore",
-                ".gitattributes",
-                ".gitmodules",
-            ],
             sources: [
                 "src/parser.c",
-                "src/scanner.c",
+                // NOTE: if your language has an external scanner, add it here.
             ],
             resources: [
                 .copy("queries")
@@ -48,12 +25,12 @@ let package = Package(
             cSettings: [.headerSearchPath("src")]
         ),
         .testTarget(
-            name: "TreeSitterSvelteTests",
+            name: "TreeSitterRsxTests",
             dependencies: [
                 "SwiftTreeSitter",
-                "TreeSitterSvelte",
+                "TreeSitterRsx",
             ],
-            path: "bindings/swift/TreeSitterSvelteTests"
+            path: "bindings/swift/TreeSitterRsxTests"
         )
     ],
     cLanguageStandard: .c11
