@@ -7,7 +7,7 @@
       "end": 155,
       "content": "async fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"data\": data,\n    })\n}",
       "ast": {
-        "0": 58750784,
+        "0": 6443328,
         "1": 24576,
         "2": 0,
         "3": 0,
@@ -5762,7 +5762,7 @@
       "end": 414,
       "content": "interface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    onUserClick: (user: User) => void;\n    showAvatar: boolean;\n}>();",
       "ast": {
-        "0": 58752992,
+        "0": 6445056,
         "1": 24576,
         "2": 0,
         "3": 0,
@@ -12955,7 +12955,7 @@
       "end": 1340,
       "content": "<div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n        \n        {#if users.length > 0}\n            <ul class=\"user-list\">\n                {#each users as user, index}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\" \n                        data-index=\"{{ index }}\">\n                        {#if showAvatar && user.avatar}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {/if}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {/each}\n            </ul>\n        {:else}\n            <p class=\"empty-message\">No users found.</p>\n        {/if}\n        \n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n    </div>",
       "ast": {
-        "0": 58854208,
+        "0": 6448224,
         "1": 24576,
         "2": 0,
         "3": 0,
@@ -13407,7 +13407,7 @@
       "end": 2112,
       "content": ".user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n    \n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n        \n        &.with-avatar {\n            padding-left: 60px;\n        }\n        \n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n        \n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n        \n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}",
       "ast": {
-        "0": 58857696,
+        "0": 6451712,
         "1": 24576,
         "2": 0,
         "3": 0,

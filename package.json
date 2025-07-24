@@ -2,14 +2,14 @@
   "name": "tree-sitter-rsx",
   "version": "0.1.0",
   "description": "The rsx language",
-  "repository": "https://github.com/tree-sitter/tree-sitter-rsx",
+  "repository": "https://github.com/guobin211/tree-sitter-rsx",
   "license": "MIT",
   "author": {
     "name": "michael",
     "email": "michaelbguo@tencent.com"
   },
-  "main": "bindings/node",
-  "types": "bindings/node",
+  "main": "./src/rsx-parser.js",
+  "types": "./src/rsx-parser.d.ts",
   "keywords": [
     "incremental",
     "parsing",
@@ -27,30 +27,16 @@
     "*.wasm"
   ],
   "dependencies": {
-    "node-addon-api": "^8.3.1",
-    "node-gyp-build": "^4.8.4",
+    "node-addon-api": "8.5.0",
+    "node-gyp-build": "4.8.4",
     "tree-sitter": "^0.21",
-    "tree-sitter-html": "~0.23",
-    "tree-sitter-rust": "~0.21",
-    "tree-sitter-scss": "~1.0",
-    "tree-sitter-typescript": "0.21.1"
-  },
-  "devDependencies": {
-    "prebuildify": "^6.0.1",
-    "tree-sitter-cli": "^0.25.8"
-  },
-  "peerDependencies": {
-    "tree-sitter": "^0.21"
-  },
-  "peerDependenciesMeta": {
-    "tree-sitter": {
-      "optional": true
-    }
+    "tree-sitter-html": "^0.23",
+    "tree-sitter-rust": "^0.21",
+    "tree-sitter-scss": "^1.0",
+    "tree-sitter-typescript": "^0.21"
   },
   "scripts": {
-    "install": "node-gyp-build",
-    "prestart": "tree-sitter build --wasm",
-    "start": "tree-sitter playground",
+    "dev": "tree-sitter generate && tree-sitter build --wasm",
     "test": "node --test example/test-parser.js"
   }
 }
