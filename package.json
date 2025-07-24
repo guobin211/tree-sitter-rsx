@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-rsx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The rsx language",
   "repository": "https://github.com/guobin211/tree-sitter-rsx",
   "license": "MIT",
@@ -17,18 +17,9 @@
     "rsx"
   ],
   "files": [
-    "grammar.js",
-    "tree-sitter.json",
-    "binding.gyp",
-    "prebuilds/**",
-    "bindings/node/*",
-    "queries/*",
-    "src/**",
-    "*.wasm"
+    "src/**"
   ],
   "dependencies": {
-    "node-addon-api": "8.5.0",
-    "node-gyp-build": "4.8.4",
     "tree-sitter": "^0.21",
     "tree-sitter-html": "^0.23",
     "tree-sitter-rust": "^0.21",

@@ -187,9 +187,31 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
+### 客户端组件
+
+- 使用`client`属性指定组件的类型
+- 使用`client="react"`指定React组件
+- 使用`client="vue"`指定Vue组件
+- 使用`client="svelte"`指定Svelte组件
+
+```html
+<script>
+    import SvelteApp from './svelte/app.tsx';
+    import ReactApp from './react/app.tsx';
+    import VueApp from './vue/app.tsx';
+</script>
+<template>
+    <div>
+        <SvelteApp client="svelte" users="{{users}}"></SvelteApp>
+        <ReactApp client="react" users="{{users}}"></ReactApp>
+        <VueApp client="vue" users="{{users}}"></VueApp>
+    </div>
+</template>
+```
+
 ## Style部分规范
 
 ### 语法规则
 
 - 以`<style>`开头，以`</style>`结尾
-- 使用CSS或SCSS编写样式
+- 使用SCSS编写样式

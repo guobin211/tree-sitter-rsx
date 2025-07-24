@@ -8,12 +8,6 @@ importers:
 
   .:
     dependencies:
-      node-addon-api:
-        specifier: 8.5.0
-        version: 8.5.0
-      node-gyp-build:
-        specifier: 4.8.4
-        version: 4.8.4
       tree-sitter:
         specifier: ^0.21
         version: 0.21.1
