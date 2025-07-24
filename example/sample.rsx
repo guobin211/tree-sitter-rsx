@@ -32,22 +32,22 @@ const { users, onUserClick, showAvatar } = defineProps<{
     <div class="user-container">
         <h1>Hello, {{ name }}!</h1>
 
-        {#if users.length > 0}
+        {{#if users.length > 0}}
             <ul class="user-list">
-                {#each users as user, index}
+                {{#each users as user, index}}
                     <li class="user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}"
                         data-index="{{ index }}">
-                        {#if showAvatar && user.avatar}
+                        {{#if showAvatar && user.avatar}}
                             <img src="{{ user.avatar }}" alt="{{ user.name }}" />
-                        {/if}
+                        {{/if}}
                         <span class="user-name">{{ user.name }}</span>
                         <span class="user-email">{{ user.email }}</span>
                     </li>
-                {/each}
+                {{/each}}
             </ul>
-        {:else}
+        {{:else}}
             <p class="empty-message">No users found.</p>
-        {/if}
+        {{/if}}
 
         <div class="raw-content">
             {{@html rawHtmlContent}}

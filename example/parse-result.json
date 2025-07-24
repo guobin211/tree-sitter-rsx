@@ -4,17 +4,17 @@
     {
       "type": "rust_section",
       "start": 0,
-      "end": 155,
-      "content": "async fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"data\": data,\n    })\n}",
+      "end": 238,
+      "content": "use rsx::{Request, Response};\nuse api::{fetch_data};\n\nasync fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"users\": data,\n        \"showAvatar\": false\n    })\n}",
       "ast": {
-        "0": 1199687104,
+        "0": 577802480,
         "1": 1,
         "2": 0,
         "3": 0,
         "4": 0,
         "5": 0,
         "tree": {
-          "input": "async fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"data\": data,\n    })\n}",
+          "input": "use rsx::{Request, Response};\nuse api::{fetch_data};\n\nasync fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"users\": data,\n        \"showAvatar\": false\n    })\n}",
           "language": {
             "name": "rust",
             "language": {},
@@ -5758,18 +5758,18 @@
     },
     {
       "type": "script_section",
-      "start": 156,
-      "end": 414,
-      "content": "interface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    onUserClick: (user: User) => void;\n    showAvatar: boolean;\n}>();",
+      "start": 239,
+      "end": 529,
+      "content": "import { defineProps } from 'rsx';\nimport App from './react/app.tsx';\n\ninterface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    showAvatar: boolean;\n}>();",
       "ast": {
-        "0": 1199787904,
+        "0": 577850512,
         "1": 1,
         "2": 0,
         "3": 0,
         "4": 0,
         "5": 0,
         "tree": {
-          "input": "interface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    onUserClick: (user: User) => void;\n    showAvatar: boolean;\n}>();",
+          "input": "import { defineProps } from 'rsx';\nimport App from './react/app.tsx';\n\ninterface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    showAvatar: boolean;\n}>();",
           "language": {
             "name": "typescript",
             "language": {},
@@ -12951,18 +12951,18 @@
     },
     {
       "type": "template_section",
-      "start": 416,
-      "end": 1340,
-      "content": "<div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n        \n        {#if users.length > 0}\n            <ul class=\"user-list\">\n                {#each users as user, index}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\" \n                        data-index=\"{{ index }}\">\n                        {#if showAvatar && user.avatar}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {/if}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {/each}\n            </ul>\n        {:else}\n            <p class=\"empty-message\">No users found.</p>\n        {/if}\n        \n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n    </div>",
+      "start": 531,
+      "end": 1506,
+      "content": "<div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n\n        {{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}\n\n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n\n        <App client=\"react\" users=\"{{users}}\"></App>\n    </div>",
       "ast": {
-        "0": 1199816688,
+        "0": 577876368,
         "1": 1,
         "2": 0,
         "3": 0,
         "4": 0,
         "5": 0,
         "tree": {
-          "input": "<div class=\"user-container\">\n        <h1>Hello, <!-- INTERPOLATION_0 -->!</h1>\n        \n        <!-- IF_DIRECTIVE_8 -->\n                        <span class=\"user-name\"><!-- INTERPOLATION_5 --></span>\n                        <span class=\"user-email\"><!-- INTERPOLATION_6 --></span>\n                    </li>\n                {/each}\n            </ul>\n        {:else}\n            <p class=\"empty-message\">No users found.</p>\n        {/if}\n        \n        <div class=\"raw-content\">\n            <!-- INTERPOLATION_7 -->\n        </div>\n    </div>",
+          "input": "<div class=\"user-container\">\n        <h1>Hello, <!-- INTERPOLATION_3 -->!</h1>\n\n        <!-- IF_DIRECTIVE_1 -->\n\n        <div class=\"raw-content\">\n            <!-- RAW_HTML_2 -->\n        </div>\n\n        <!-- CLIENT_COMPONENT_5 -->\n    </div>",
           "language": {
             "name": "html",
             "language": {},
@@ -13332,6 +13332,44 @@
       },
       "directives": [
         {
+          "type": "each_directive",
+          "array": "users",
+          "item": "user",
+          "index": "index",
+          "body": "<li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>",
+          "start": 39,
+          "end": 576,
+          "original": "{{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}"
+        },
+        {
+          "type": "if_directive",
+          "condition": "users.length > 0",
+          "branches": [
+            {
+              "type": "if",
+              "condition": "users.length > 0",
+              "body": "<ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>",
+              "processedBody": "<ul class=\"user-list\">\n                <!-- EACH_DIRECTIVE_0 -->\n            </ul>"
+            },
+            {
+              "type": "else",
+              "condition": null,
+              "body": "<p class=\"empty-message\">No users found.</p>",
+              "processedBody": "<p class=\"empty-message\">No users found.</p>"
+            }
+          ],
+          "start": 74,
+          "end": 796,
+          "original": "{{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}"
+        },
+        {
+          "type": "raw_html_directive",
+          "content": "rawHtmlContent",
+          "start": 145,
+          "end": 169,
+          "original": "{{@html rawHtmlContent}}"
+        },
+        {
           "type": "interpolation",
           "expression": "name",
           "parsedExpression": {
@@ -13346,136 +13384,48 @@
         },
         {
           "type": "interpolation",
-          "expression": "showAvatar ? 'with-avatar' : 'no-avatar'",
-          "parsedExpression": {
-            "type": "conditional",
-            "raw": "showAvatar ? 'with-avatar' : 'no-avatar'",
-            "parts": [],
-            "condition": "showAvatar",
-            "trueValue": "'with-avatar'",
-            "falseValue": "'no-avatar'"
-          },
-          "start": 226,
-          "end": 272,
-          "original": "{{ showAvatar ? 'with-avatar' : 'no-avatar' }}"
-        },
-        {
-          "type": "interpolation",
-          "expression": "index",
+          "expression": "users",
           "parsedExpression": {
             "type": "identifier",
-            "raw": "index",
+            "raw": "users",
             "parts": [],
-            "name": "index"
+            "name": "users"
           },
-          "start": 311,
-          "end": 322,
-          "original": "{{ index }}"
+          "start": 216,
+          "end": 225,
+          "original": "{{users}}"
         },
         {
-          "type": "interpolation",
-          "expression": "user.avatar",
-          "parsedExpression": {
-            "type": "property_access",
-            "raw": "user.avatar",
-            "parts": [
-              "user",
-              "avatar"
-            ]
+          "type": "client_component",
+          "tagName": "App",
+          "clientType": "react",
+          "attributes": {
+            "client": "react",
+            "users": true,
+            "INTERPOLATION_4": true
           },
-          "start": 419,
-          "end": 436,
-          "original": "{{ user.avatar }}"
-        },
-        {
-          "type": "interpolation",
-          "expression": "user.name",
-          "parsedExpression": {
-            "type": "property_access",
-            "raw": "user.name",
-            "parts": [
-              "user",
-              "name"
-            ]
-          },
-          "start": 443,
-          "end": 458,
-          "original": "{{ user.name }}"
-        },
-        {
-          "type": "interpolation",
-          "expression": "user.name",
-          "parsedExpression": {
-            "type": "property_access",
-            "raw": "user.name",
-            "parts": [
-              "user",
-              "name"
-            ]
-          },
-          "start": 541,
-          "end": 556,
-          "original": "{{ user.name }}"
-        },
-        {
-          "type": "interpolation",
-          "expression": "user.email",
-          "parsedExpression": {
-            "type": "property_access",
-            "raw": "user.email",
-            "parts": [
-              "user",
-              "email"
-            ]
-          },
-          "start": 613,
-          "end": 629,
-          "original": "{{ user.email }}"
-        },
-        {
-          "type": "interpolation",
-          "expression": "@html rawHtmlContent",
-          "parsedExpression": {
-            "type": "identifier",
-            "raw": "@html rawHtmlContent",
-            "parts": [],
-            "name": "@html rawHtmlContent"
-          },
-          "start": 847,
-          "end": 871,
-          "original": "{{@html rawHtmlContent}}"
-        },
-        {
-          "type": "if_directive",
-          "condition": "users.length > 0",
-          "branches": [
-            {
-              "type": "if",
-              "condition": "users.length > 0",
-              "body": "<ul class=\"user-list\">\n                {#each users as user, index}\n                    <li class=\"user-item <!-- INTERPOLATION_1 -->\" \n                        data-index=\"<!-- INTERPOLATION_2 -->\">\n                        {#if showAvatar && user.avatar}\n                            <img src=\"<!-- INTERPOLATION_3 -->\" alt=\"<!-- INTERPOLATION_4 -->\" />"
-            }
-          ],
-          "start": 96,
-          "end": 513,
-          "original": "{#if users.length > 0}\n            <ul class=\"user-list\">\n                {#each users as user, index}\n                    <li class=\"user-item <!-- INTERPOLATION_1 -->\" \n                        data-index=\"<!-- INTERPOLATION_2 -->\">\n                        {#if showAvatar && user.avatar}\n                            <img src=\"<!-- INTERPOLATION_3 -->\" alt=\"<!-- INTERPOLATION_4 -->\" />\n                        {/if}"
+          "children": "\">",
+          "start": 203,
+          "end": 262,
+          "original": "<App client=\"react\" users=\"<!-- INTERPOLATION_4 -->\"></App>"
         }
       ],
       "errors": []
     },
     {
       "type": "style_section",
-      "start": 1342,
-      "end": 2112,
-      "content": ".user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n    \n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n        \n        &.with-avatar {\n            padding-left: 60px;\n        }\n        \n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n        \n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n        \n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}",
+      "start": 1508,
+      "end": 2242,
+      "content": ".user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n\n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n\n        &.with-avatar {\n            padding-left: 60px;\n        }\n\n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n\n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n\n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}",
       "ast": {
-        "0": 1199864608,
+        "0": 577888112,
         "1": 1,
         "2": 0,
         "3": 0,
         "4": 0,
         "5": 0,
         "tree": {
-          "input": ".user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n    \n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n        \n        &.with-avatar {\n            padding-left: 60px;\n        }\n        \n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n        \n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n        \n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}",
+          "input": ".user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n\n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n\n        &.with-avatar {\n            padding-left: 60px;\n        }\n\n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n\n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n\n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}",
           "language": {
             "name": "scss",
             "language": {},
@@ -17930,5 +17880,6 @@
       "errors": []
     }
   ],
-  "errors": []
+  "errors": [],
+  "originalContent": "---\nuse rsx::{Request, Response};\nuse api::{fetch_data};\n\nasync fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"users\": data,\n        \"showAvatar\": false\n    })\n}\n---\n\n<script>\nimport { defineProps } from 'rsx';\nimport App from './react/app.tsx';\n\ninterface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    showAvatar: boolean;\n}>();\n</script>\n\n<template>\n    <div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n\n        {{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}\n\n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n\n        <App client=\"react\" users=\"{{users}}\"></App>\n    </div>\n</template>\n\n<style>\n.user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n\n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n\n        &.with-avatar {\n            padding-left: 60px;\n        }\n\n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n\n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n\n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}\n</style>\n"
 }

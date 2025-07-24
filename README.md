@@ -1,11 +1,5 @@
 # RSX
 
-## 概述
-
-RSX是一个现代化的全栈Web框架，支持服务端渲染(SSR)和客户端渲染(CSR)。RSX文件采用混合语法，将Rust后端逻辑、TypeScript逻辑、HTML模板和CSS样式集成在一个文件中
-
-## RSX文件规范
-
 ### 文件结构
 
 RSX文件使用`.rsx`扩展名，包含四个主要部分：
@@ -27,12 +21,6 @@ RSX文件使用`.rsx`扩展名，包含四个主要部分：
 /* Style部分：SCSS样式 */
 </style>
 ```
-
-### 文件命名规范
-
-- 使用kebab-case命名法
-- 页面静态路由：`user-profile.rsx`、`product-list.rsx`，对应页面路径 `/user-profile`、`/product-list`
-- 页面动态路由：`/list/$slug$/index.tsx`，对应页面路径 `/list/:slug`
 
 ### 基本语法规则
 
@@ -126,13 +114,13 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 ```html
 <template>
-    {#if porridge.temperature > 100}
+    {{#if porridge.temperature > 100}}
         <p>too hot!</p>
-    {:else if 80 > porridge.temperature}
+    {{:else if 80 > porridge.temperature}}
         <p>too cold!</p>
-    {:else}
+    {{:else}}
         <p>just right!</p>
-    {/if}
+    {{/if}}
 </template>
 ```
 
@@ -141,11 +129,11 @@ const { users, onUserClick, showAvatar } = defineProps<{
 ```html
 <template>
     <ul class="user-list">
-        {#each users as user, index}
+        {{#each users as user, index}}
             <li class="user-item" data-index="{{ index }}">
                 {{ user.name }}
             </li>
-        {/each}
+        {{/each}}
     </ul>
 </template>
 ```
@@ -154,16 +142,16 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 ```html
 <template>
-    {#each categories as category}
+    {{#each categories as category}}
         <div class="category">
             <h3>{{ category.name }}</h3>
             <ul class="items">
-                {#each category.items as item}
+                {{#each category.items as item}}
                     <li>{{ item.name }} - {{ item.price }}</li>
-                {/each}
+                {{/each}}
             </ul>
         </div>
-    {/each}
+    {{/each}}
 </template>
 ```
 

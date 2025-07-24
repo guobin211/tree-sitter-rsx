@@ -30,7 +30,8 @@ class RSXParser {
         const result = {
             type: 'rsx_file',
             sections: [],
-            errors: []
+            errors: [],
+            originalContent: content  // 保存原始内容用于验证
         };
 
         // 解析Rust部分
@@ -216,47 +217,63 @@ class RSXParser {
     extractSections(content) {
         const sections = {};
 
-        // 提取Rust部分
-        const rustMatch = content.match(/^---\s*\n([\s\S]*?)\n---\s*$/m);
-        if (rustMatch) {
-            const start = content.indexOf(rustMatch[0]);
+        // 提取Rust部分 - 查找所有匹配
+        const rustMatches = [...content.matchAll(/^---\s*\n([\s\S]*?)\n---\s*$/gm)];
+        if (rustMatches.length > 0) {
+            const firstMatch = rustMatches[0];
+            const start = content.indexOf(firstMatch[0]);
             sections.rust = {
-                content: rustMatch[1],
+                content: firstMatch[1],
                 start: start,
-                end: start + rustMatch[0].length
+                end: start + firstMatch[0].length,
+                count: rustMatches.length
             };
         }
 
-        // 提取Script部分
-        const scriptMatch = content.match(/<script>\s*\n?([\s\S]*?)\n?\s*<\/script>/);
-        if (scriptMatch) {
-            const start = content.indexOf(scriptMatch[0]);
+        // 提取Script部分 - 查找所有匹配
+        const scriptMatches = [...content.matchAll(/<script>\s*\n?([\s\S]*?)\n?\s*<\/script>/g)];
+        if (scriptMatches.length > 0) {
+            const firstMatch = scriptMatches[0];
+            const start = content.indexOf(firstMatch[0]);
             sections.script = {
-                content: scriptMatch[1],
+                content: firstMatch[1],
                 start: start,
-                end: start + scriptMatch[0].length
+                end: start + firstMatch[0].length,
+                count: scriptMatches.length
             };
         }
 
-        // 提取Template部分
-        const templateMatch = content.match(/<template>\s*\n?([\s\S]*?)\n?\s*<\/template>/);
-        if (templateMatch) {
-            const start = content.indexOf(templateMatch[0]);
-            sections.template = {
-                content: templateMatch[1],
-                start: start,
-                end: start + templateMatch[0].length
-            };
+        // 提取Template部分 - 使用手动解析避免嵌套问题
+        const templateStart = content.indexOf('<template>');
+        if (templateStart !== -1) {
+            const templateEnd = content.lastIndexOf('</template>');
+            if (templateEnd !== -1) {
+                const fullTemplateMatch = content.substring(templateStart, templateEnd + 11); // 11 = '</template>'.length
+                const templateContent = content.substring(templateStart + 10, templateEnd); // 10 = '<template>'.length
+
+                // 计算template section的数量
+                const templateMatches = content.match(/<template>/g);
+                const templateCount = templateMatches ? templateMatches.length : 0;
+
+                sections.template = {
+                    content: templateContent.trim(),
+                    start: templateStart,
+                    end: templateEnd + 11,
+                    count: templateCount
+                };
+            }
         }
 
-        // 提取Style部分
-        const styleMatch = content.match(/<style>\s*\n?([\s\S]*?)\n?\s*<\/style>/);
-        if (styleMatch) {
-            const start = content.indexOf(styleMatch[0]);
+        // 提取Style部分 - 查找所有匹配
+        const styleMatches = [...content.matchAll(/<style>\s*\n?([\s\S]*?)\n?\s*<\/style>/g)];
+        if (styleMatches.length > 0) {
+            const firstMatch = styleMatches[0];
+            const start = content.indexOf(firstMatch[0]);
             sections.style = {
-                content: styleMatch[1],
+                content: firstMatch[1],
                 start: start,
-                end: start + styleMatch[0].length
+                end: start + firstMatch[0].length,
+                count: styleMatches.length
             };
         }
 
@@ -302,8 +319,54 @@ class RSXParser {
     preprocessTemplate(content, directives) {
         let processedContent = content;
 
-        // 处理文本插值 {{ expression }}
-        processedContent = processedContent.replace(/\{\{\s*([^}]+)\s*\}\}/g, (match, expression, offset) => {
+        // 递归处理所有模板指令，直到没有更多指令需要处理
+        let hasChanges = true;
+        let iterations = 0;
+        const maxIterations = 10; // 防止无限循环
+
+        while (hasChanges && iterations < maxIterations) {
+            const initialDirectiveCount = directives.length;
+
+            // 处理复杂的条件指令，支持嵌套的 else if
+            processedContent = this.processIfDirectives(processedContent, directives);
+
+            // 处理循环指令 {{#each array as item, index}}
+            processedContent = processedContent.replace(
+                /\{\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
+                (match, array, item, index, body, offset) => {
+                    directives.push({
+                        type: 'each_directive',
+                        array: array,
+                        item: item,
+                        index: index || null,
+                        body: body ? body.trim() : '',
+                        start: offset,
+                        end: offset + match.length,
+                        original: match
+                    });
+                    return `<!-- EACH_DIRECTIVE_${directives.length - 1} -->`;
+                }
+            );
+
+            // 处理Raw HTML指令 {{@html content}}
+            processedContent = processedContent.replace(/\{\{@html\s+([\w.]+)\}\}/g, (match, content, offset) => {
+                directives.push({
+                    type: 'raw_html_directive',
+                    content: content,
+                    start: offset,
+                    end: offset + match.length,
+                    original: match
+                });
+                return `<!-- RAW_HTML_${directives.length - 1} -->`;
+            });
+
+            // 检查是否有新的指令被添加
+            hasChanges = directives.length > initialDirectiveCount;
+            iterations++;
+        }
+
+        // 最后处理文本插值 {{ expression }}（必须在结构化指令之后）
+        processedContent = processedContent.replace(/\{\{\s*([^}#@/:]+)\s*\}\}/g, (match, expression, offset) => {
             const parsedExpression = this.parseExpression(expression.trim());
             directives.push({
                 type: 'interpolation',
@@ -314,39 +377,6 @@ class RSXParser {
                 original: match
             });
             return `<!-- INTERPOLATION_${directives.length - 1} -->`;
-        });
-
-        // 处理复杂的条件指令，支持嵌套的 else if
-        processedContent = this.processIfDirectives(processedContent, directives);
-
-        // 处理循环指令 {#each array as item, index}
-        processedContent = processedContent.replace(
-            /\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}([\s\S]*?)\{\/each\}/g,
-            (match, array, item, index, body, offset) => {
-                directives.push({
-                    type: 'each_directive',
-                    array: array,
-                    item: item,
-                    index: index || null,
-                    body: body ? body.trim() : '',
-                    start: offset,
-                    end: offset + match.length,
-                    original: match
-                });
-                return `<!-- EACH_DIRECTIVE_${directives.length - 1} -->`;
-            }
-        );
-
-        // 处理Raw HTML指令 {{@html content}}
-        processedContent = processedContent.replace(/\{\{@html\s+([\w.]+)\}\}/g, (match, content, offset) => {
-            directives.push({
-                type: 'raw_html_directive',
-                content: content,
-                start: offset,
-                end: offset + match.length,
-                original: match
-            });
-            return `<!-- RAW_HTML_${directives.length - 1} -->`;
         });
 
         // 处理客户端组件
@@ -362,62 +392,230 @@ class RSXParser {
      * @returns {string} 处理后的内容
      */
     processIfDirectives(content, directives) {
-        // 使用递归方式处理嵌套的if指令
-        const ifPattern = /\{#if\s+([^}]+)\}([\s\S]*?)\{\/if\}/g;
+        // 使用栈来处理嵌套的if指令
+        let processedContent = content;
+        let offset = 0;
 
-        return content.replace(ifPattern, (match, condition, body, offset) => {
-            const ifDirective = {
-                type: 'if_directive',
-                condition: condition.trim(),
-                branches: [],
-                start: offset,
-                end: offset + match.length,
-                original: match
-            };
+        // 找到所有if指令的开始和结束位置
+        const findMatchingDirectives = (text) => {
+            const stack = [];
+            const matches = [];
+            let index = 0;
 
-            // 解析if分支体，查找else if和else
-            let currentBody = body;
-            let currentCondition = condition.trim();
+            while (index < text.length) {
+                const ifMatch = text.slice(index).match(/^\{\{#if\s+([^}]+)\}\}/);
+                const elseMatch = text.slice(index).match(/^\{\{:else(?:\s+if\s+([^}]+))?\}\}/);
+                const endIfMatch = text.slice(index).match(/^\{\{\/if\}\}/);
 
-            // 添加主if分支
-            const elseIfPattern = /\{:else\s+if\s+([^}]+)\}/g;
-            const elsePattern = /\{:else\}/g;
-
-            let parts = currentBody.split(/\{:else(?:\s+if\s+[^}]+)?\}/);
-            let matches = [...currentBody.matchAll(/\{:else(?:\s+if\s+([^}]+))?\}/g)];
-
-            // 主if分支
-            ifDirective.branches.push({
-                type: 'if',
-                condition: currentCondition,
-                body: parts[0] ? parts[0].trim() : ''
-            });
-
-            // 处理else if和else分支
-            for (let i = 0; i < matches.length; i++) {
-                const match = matches[i];
-                const elseIfCondition = match[1];
-                const branchBody = parts[i + 1] ? parts[i + 1].trim() : '';
-
-                if (elseIfCondition) {
-                    // else if分支
-                    ifDirective.branches.push({
-                        type: 'else_if',
-                        condition: elseIfCondition.trim(),
-                        body: branchBody
+                if (ifMatch) {
+                    stack.push({
+                        type: 'if',
+                        condition: ifMatch[1].trim(),
+                        start: index,
+                        startLength: ifMatch[0].length
                     });
+                    index += ifMatch[0].length;
+                } else if (elseMatch && stack.length > 0) {
+                    const current = stack[stack.length - 1];
+                    if (!current.branches) current.branches = [];
+                    current.branches.push({
+                        type: elseMatch[1] ? 'else_if' : 'else',
+                        condition: elseMatch[1] ? elseMatch[1].trim() : null,
+                        start: index,
+                        length: elseMatch[0].length
+                    });
+                    index += elseMatch[0].length;
+                } else if (endIfMatch && stack.length > 0) {
+                    const directive = stack.pop();
+                    directive.end = index;
+                    directive.endLength = endIfMatch[0].length;
+
+                    if (stack.length === 0) { // 只处理顶级if指令
+                        matches.push(directive);
+                    }
+                    index += endIfMatch[0].length;
                 } else {
-                    // else分支
-                    ifDirective.branches.push({
-                        type: 'else',
-                        body: branchBody
-                    });
+                    index++;
                 }
             }
 
+            return matches;
+        };
+
+        const matches = findMatchingDirectives(processedContent);
+
+        // 从后往前处理，避免位置偏移问题
+        for (let i = matches.length - 1; i >= 0; i--) {
+            const match = matches[i];
+            const fullMatch = processedContent.substring(match.start, match.end + match.endLength);
+
+            // 解析分支内容
+            let bodyStart = match.start + match.startLength;
+            const branches = [{
+                type: 'if',
+                condition: match.condition,
+                body: ''
+            }];
+
+            // 处理else分支
+            if (match.branches) {
+                let currentStart = bodyStart;
+
+                for (const branch of match.branches) {
+                    // 上一个分支的内容
+                    const prevBranch = branches[branches.length - 1];
+                    prevBranch.body = processedContent.substring(currentStart, branch.start).trim();
+
+                    // 添加新分支
+                    branches.push({
+                        type: branch.type,
+                        condition: branch.condition,
+                        body: ''
+                    });
+
+                    currentStart = branch.start + branch.length;
+                }
+
+                // 最后一个分支的内容
+                const lastBranch = branches[branches.length - 1];
+                lastBranch.body = processedContent.substring(currentStart, match.end).trim();
+            } else {
+                // 只有if分支
+                branches[0].body = processedContent.substring(bodyStart, match.end).trim();
+            }
+
+            const ifDirective = {
+                type: 'if_directive',
+                condition: match.condition,
+                branches: branches.map(branch => ({
+                    ...branch,
+                    // 递归处理分支内容中的嵌套指令
+                    body: branch.body,
+                    processedBody: this.preprocessBranchContent(branch.body, directives)
+                })),
+                start: match.start + offset,
+                end: match.end + match.endLength + offset,
+                original: fullMatch
+            };
+
             directives.push(ifDirective);
-            return `<!-- IF_DIRECTIVE_${directives.length - 1} -->`;
+
+            // 替换内容
+            const replacement = `<!-- IF_DIRECTIVE_${directives.length - 1} -->`;
+            processedContent = processedContent.substring(0, match.start) +
+                            replacement +
+                            processedContent.substring(match.end + match.endLength);
+        }
+
+        return processedContent;
+    }
+
+    /**
+     * 找到正确的template匹配，处理嵌套template标签的情况
+     * @param {string} content - 完整内容
+     * @param {Array} matches - 所有匹配结果
+     * @returns {Object|null} 正确的匹配对象
+     */
+    findCorrectTemplateMatch(content, matches) {
+        // 查找最外层的<template>标签
+        const openTag = '<template>';
+        const closeTag = '</template>';
+
+        let startIndex = content.indexOf(openTag);
+        if (startIndex === -1) return null;
+
+        // 使用栈来匹配正确的闭合标签
+        let depth = 0;
+        let currentIndex = startIndex;
+
+        while (currentIndex < content.length) {
+            const nextOpen = content.indexOf(openTag, currentIndex);
+            const nextClose = content.indexOf(closeTag, currentIndex);
+
+            // 如果没有找到闭合标签，说明不匹配
+            if (nextClose === -1) break;
+
+            // 如果下一个开放标签在下一个闭合标签之前
+            if (nextOpen !== -1 && nextOpen < nextClose) {
+                depth++;
+                currentIndex = nextOpen + openTag.length;
+            } else {
+                if (depth === 0) {
+                    // 找到匹配的闭合标签
+                    const fullMatch = content.substring(startIndex, nextClose + closeTag.length);
+                    const innerContent = content.substring(startIndex + openTag.length, nextClose).trim();
+
+                    return {
+                        fullMatch: fullMatch,
+                        content: innerContent
+                    };
+                }
+                depth--;
+                currentIndex = nextClose + closeTag.length;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 递归处理分支内容中的嵌套指令
+     * @param {string} content - 分支内容
+     * @param {Array} directives - 指令数组
+     * @returns {string} 处理后的内容
+     */
+    preprocessBranchContent(content, directives) {
+        // 使用相同的预处理逻辑，但不处理客户端组件（避免重复处理）
+        let processedContent = content;
+
+        // 处理循环指令
+        processedContent = processedContent.replace(
+            /\{\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
+            (match, array, item, index, body, offset) => {
+                directives.push({
+                    type: 'each_directive',
+                    array: array,
+                    item: item,
+                    index: index || null,
+                    body: body ? body.trim() : '',
+                    start: offset,
+                    end: offset + match.length,
+                    original: match
+                });
+                return `<!-- EACH_DIRECTIVE_${directives.length - 1} -->`;
+            }
+        );
+
+        // 处理嵌套的if指令
+        processedContent = this.processIfDirectives(processedContent, directives);
+
+        // 处理Raw HTML指令
+        processedContent = processedContent.replace(/\{\{@html\s+([\w.]+)\}\}/g, (match, content, offset) => {
+            directives.push({
+                type: 'raw_html_directive',
+                content: content,
+                start: offset,
+                end: offset + match.length,
+                original: match
+            });
+            return `<!-- RAW_HTML_${directives.length - 1} -->`;
         });
+
+        // 处理文本插值
+        processedContent = processedContent.replace(/\{\{\s*([^}#@/:]+)\s*\}\}/g, (match, expression, offset) => {
+            const parsedExpression = this.parseExpression(expression.trim());
+            directives.push({
+                type: 'interpolation',
+                expression: expression.trim(),
+                parsedExpression: parsedExpression,
+                start: offset,
+                end: offset + match.length,
+                original: match
+            });
+            return `<!-- INTERPOLATION_${directives.length - 1} -->`;
+        });
+
+        return processedContent;
     }
 
     /**
@@ -577,17 +775,31 @@ class RSXParser {
         const errors = [];
         const sections = parseResult.sections;
 
-        // 检查是否有重复的section
+        // 1. 检查是否有重复的section（通过extractSections的count检查）
         const sectionTypes = sections.map(s => s.type);
-        const duplicates = sectionTypes.filter((type, index) => sectionTypes.indexOf(type) !== index);
+        const duplicates = [];
+        const seenTypes = new Set();
+
+        sectionTypes.forEach(type => {
+            if (seenTypes.has(type)) {
+                if (!duplicates.includes(type)) {
+                    duplicates.push(type);
+                }
+            } else {
+                seenTypes.add(type);
+            }
+        });
 
         duplicates.forEach(type => {
             errors.push({
                 type: 'duplicate_section',
-                message: `重复的section: ${type}`,
-                severity: 'warning'
+                message: `代码块只能出现一次，发现重复的 ${type}`,
+                severity: 'error'
             });
         });
+
+        // 1.1 通过原始内容检查重复section（更准确的方法）
+        errors.push(...this.checkDuplicateSections(parseResult.originalContent || ''));
 
         // 验证各个section的内容
         sections.forEach(section => {
@@ -606,6 +818,57 @@ class RSXParser {
                     break;
             }
         });
+
+        return errors;
+    }
+
+    /**
+     * 检查重复的section
+     * @param {string} content - 原始内容
+     * @returns {Array} 错误列表
+     */
+    checkDuplicateSections(content) {
+        const errors = [];
+
+        // 检查rust section重复
+        const rustMatches = content.match(/^---[\s\S]*?---$/gm);
+        if (rustMatches && rustMatches.length > 1) {
+            errors.push({
+                type: 'duplicate_section',
+                message: `代码块只能出现一次，发现 ${rustMatches.length} 个 rust section`,
+                severity: 'error'
+            });
+        }
+
+        // 检查script section重复
+        const scriptMatches = content.match(/<script>[\s\S]*?<\/script>/g);
+        if (scriptMatches && scriptMatches.length > 1) {
+            errors.push({
+                type: 'duplicate_section',
+                message: `代码块只能出现一次，发现 ${scriptMatches.length} 个 script section`,
+                severity: 'error'
+            });
+        }
+
+        // 检查template section重复
+        const templateMatches = content.match(/<template>[\s\S]*?<\/template>/g);
+        if (templateMatches && templateMatches.length > 1) {
+            errors.push({
+                type: 'duplicate_section',
+                message: `代码块只能出现一次，发现 ${templateMatches.length} 个 template section`,
+                severity: 'error'
+            });
+        }
+
+        // 检查style section重复
+        const styleMatches = content.match(/<style>[\s\S]*?<\/style>/g);
+        if (styleMatches && styleMatches.length > 1) {
+            errors.push({
+                type: 'duplicate_section',
+                message: `代码块只能出现一次，发现 ${styleMatches.length} 个 style section`,
+                severity: 'error'
+            });
+        }
 
         return errors;
     }
@@ -688,6 +951,43 @@ class RSXParser {
      */
     validateTemplateSection(section) {
         const errors = [];
+
+        // 2. 检查template中是否包含禁用的标签
+        const forbiddenTags = ['template', 'script', 'style'];
+        const content = section.content;
+
+        forbiddenTags.forEach(tag => {
+            const tagPattern = new RegExp(`<${tag}[^>]*>`, 'gi');
+            const matches = content.match(tagPattern);
+            if (matches) {
+                errors.push({
+                    type: 'forbidden_tag',
+                    message: `template部分不允许使用 <${tag}> 标签`,
+                    severity: 'error',
+                    section: 'template'
+                });
+            }
+        });
+
+        // 3. 检查HTML标签中的事件属性
+        const eventAttributePattern = /\s(on[a-z]+)\s*=/gi;
+        let eventMatch;
+        const foundEvents = new Set();
+
+        while ((eventMatch = eventAttributePattern.exec(content)) !== null) {
+            foundEvents.add(eventMatch[1].toLowerCase());
+        }
+
+        if (foundEvents.size > 0) {
+            foundEvents.forEach(event => {
+                errors.push({
+                    type: 'forbidden_event_attribute',
+                    message: `HTML标签中不允许使用事件属性: ${event}`,
+                    severity: 'error',
+                    section: 'template'
+                });
+            });
+        }
 
         // 检查模板指令的正确性
         if (section.directives) {

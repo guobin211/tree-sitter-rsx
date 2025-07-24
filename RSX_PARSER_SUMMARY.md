@@ -33,8 +33,8 @@
 **核心功能改进：**
 
 #### 模板指令处理
-- **复杂条件指令**: 支持多层嵌套的 `{#if}` `{:else if}` `{:else}` `{/if}`
-- **循环指令增强**: 支持 `{#each array as item, index}` 语法
+- **复杂条件指令**: 支持多层嵌套的 `{{#if}}` `{{:else if}}` `{{:else}}` `{{/if}}`
+- **循环指令增强**: 支持 `{{#each array as item, index}}` 语法
 - **客户端组件**: 解析 `client="react|vue|svelte"` 属性
 - **Raw HTML**: 支持 `{{@html content}}` 指令
 
@@ -121,23 +121,23 @@ const { users, showAvatar } = defineProps<{
 ```html
 <template>
     <!-- 条件渲染 -->
-    {#if user.isActive}
+    {{#if user.isActive}}
         <p>用户活跃</p>
-    {:else if user.isPending}
+    {{:else if user.isPending}}
         <p>用户待审核</p>
-    {:else}
+    {{:else}}
         <p>用户未激活</p>
-    {/if}
+    {{/if}}
 
     <!-- 循环渲染 -->
-    {#each categories as category, index}
+    {{#each categories as category, index}}
         <div class="category-{{ index }}">
             <h3>{{ category.name }}</h3>
-            {#each category.items as item}
+            {{#each category.items as item}}
                 <p>{{ item.name }} - ¥{{ item.price }}</p>
-            {/each}
+            {{/each}}
         </div>
-    {/each}
+    {{/each}}
 
     <!-- 客户端组件 -->
     <ReactApp client="react" user="{{user}}" />
