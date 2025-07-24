@@ -1,22 +1,26 @@
 {
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
   "grammars": [
     {
       "name": "rsx",
       "camelcase": "Rsx",
+      "title": "Rsx",
       "scope": "source.rsx",
       "file-types": [
-        ".rsx"
+        "rsx"
       ],
-      "injection-regex": "^rsx$"
+      "injection-regex": "^rsx$",
+      "class-name": "TreeSitterRsx"
     }
   ],
   "metadata": {
     "version": "0.1.0",
     "license": "MIT",
-    "description": "rsx language",
+    "description": "The rsx language",
     "authors": [
       {
-        "name": "guobin211"
+        "name": "michael",
+        "email": "michaelbguo@tencent.com"
       }
     ],
     "links": {
@@ -29,6 +33,7 @@
     "node": true,
     "python": true,
     "rust": true,
-    "swift": true
+    "swift": true,
+    "zig": false
   }
 }

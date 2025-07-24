@@ -1,4 +1,4 @@
-"""rsx language"""
+"""The rsx language"""
 
 from importlib.resources import files as _files
 

@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - tree-sitter
+  - tree-sitter-html
+  - tree-sitter-rust
+  - tree-sitter-scss
+  - tree-sitter-typescript

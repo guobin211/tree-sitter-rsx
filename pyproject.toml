@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools>=62.4.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "tree-sitter-rsx"
-description = "rsx language"
+description = "The rsx language"
 version = "0.1.0"
 keywords = ["incremental", "parsing", "tree-sitter", "rsx"]
 classifiers = [
@@ -13,8 +13,8 @@ classifiers = [
   "Topic :: Text Processing :: Linguistic",
   "Typing :: Typed",
 ]
-authors = [{ name = "guobin211" }]
-requires-python = ">=3.9"
+authors = [{ name = "michael", email = "michaelbguo@tencent.com" }]
+requires-python = ">=3.10"
 license.text = "MIT"
 readme = "README.md"
 
@@ -22,8 +22,8 @@ readme = "README.md"
 Homepage = "https://github.com/tree-sitter/tree-sitter-rsx"
 
 [project.optional-dependencies]
-core = ["tree-sitter~=0.22"]
+core = ["tree-sitter~=0.24"]
 
 [tool.cibuildwheel]
-build = "cp39-*"
+build = "cp310-*"
 build-frontend = "build"
