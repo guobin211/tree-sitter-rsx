@@ -7,8 +7,8 @@
       "end": 238,
       "content": "use rsx::{Request, Response};\nuse api::{fetch_data};\n\nasync fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"users\": data,\n        \"showAvatar\": false\n    })\n}",
       "ast": {
-        "0": 577802480,
-        "1": 1,
+        "0": 3829447712,
+        "1": 371,
         "2": 0,
         "3": 0,
         "4": 0,
@@ -5762,8 +5762,8 @@
       "end": 529,
       "content": "import { defineProps } from 'rsx';\nimport App from './react/app.tsx';\n\ninterface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    showAvatar: boolean;\n}>();",
       "ast": {
-        "0": 577850512,
-        "1": 1,
+        "0": 3831331840,
+        "1": 371,
         "2": 0,
         "3": 0,
         "4": 0,
@@ -12955,8 +12955,8 @@
       "end": 1506,
       "content": "<div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n\n        {{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}\n\n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n\n        <App client=\"react\" users=\"{{users}}\"></App>\n    </div>",
       "ast": {
-        "0": 577876368,
-        "1": 1,
+        "0": 3831348016,
+        "1": 371,
         "2": 0,
         "3": 0,
         "4": 0,
@@ -13418,8 +13418,8 @@
       "end": 2242,
       "content": ".user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n\n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n\n        &.with-avatar {\n            padding-left: 60px;\n        }\n\n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n\n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n\n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}",
       "ast": {
-        "0": 577888112,
-        "1": 1,
+        "0": 3831353392,
+        "1": 371,
         "2": 0,
         "3": 0,
         "4": 0,
