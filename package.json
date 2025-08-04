@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-rsx",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "The rsx language",
   "repository": "https://github.com/guobin211/tree-sitter-rsx",
   "license": "MIT",
@@ -25,6 +25,9 @@
     "tree-sitter-rust": "^0.21",
     "tree-sitter-scss": "^1.0",
     "tree-sitter-typescript": "^0.21"
+  },
+  "devDependencies": {
+    "@types/node": "^22"
   },
   "scripts": {
     "dev": "tree-sitter generate && tree-sitter build --wasm",
