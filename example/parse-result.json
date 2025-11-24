@@ -7,8 +7,8 @@
       "end": 238,
       "content": "use rsx::{Request, Response};\nuse api::{fetch_data};\n\nasync fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"users\": data,\n        \"showAvatar\": false\n    })\n}",
       "ast": {
-        "0": 3829447712,
-        "1": 371,
+        "0": 1139207376,
+        "1": 1,
         "2": 0,
         "3": 0,
         "4": 0,
@@ -5762,8 +5762,8 @@
       "end": 529,
       "content": "import { defineProps } from 'rsx';\nimport App from './react/app.tsx';\n\ninterface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    showAvatar: boolean;\n}>();",
       "ast": {
-        "0": 3831331840,
-        "1": 371,
+        "0": 1139108912,
+        "1": 1,
         "2": 0,
         "3": 0,
         "4": 0,
@@ -5774,92 +5774,6 @@
             "name": "typescript",
             "language": {},
             "nodeTypeInfo": [
-              {
-                "type": "_primary_type",
-                "named": true,
-                "subtypes": [
-                  {
-                    "type": "array_type",
-                    "named": true
-                  },
-                  {
-                    "type": "conditional_type",
-                    "named": true
-                  },
-                  {
-                    "type": "const",
-                    "named": false
-                  },
-                  {
-                    "type": "existential_type",
-                    "named": true
-                  },
-                  {
-                    "type": "flow_maybe_type",
-                    "named": true
-                  },
-                  {
-                    "type": "generic_type",
-                    "named": true
-                  },
-                  {
-                    "type": "index_type_query",
-                    "named": true
-                  },
-                  {
-                    "type": "intersection_type",
-                    "named": true
-                  },
-                  {
-                    "type": "literal_type",
-                    "named": true
-                  },
-                  {
-                    "type": "lookup_type",
-                    "named": true
-                  },
-                  {
-                    "type": "nested_type_identifier",
-                    "named": true
-                  },
-                  {
-                    "type": "object_type",
-                    "named": true
-                  },
-                  {
-                    "type": "parenthesized_type",
-                    "named": true
-                  },
-                  {
-                    "type": "predefined_type",
-                    "named": true
-                  },
-                  {
-                    "type": "template_literal_type",
-                    "named": true
-                  },
-                  {
-                    "type": "this_type",
-                    "named": true
-                  },
-                  {
-                    "type": "tuple_type",
-                    "named": true
-                  },
-                  {
-                    "type": "type_identifier",
-                    "named": true
-                  },
-                  {
-                    "type": "type_query",
-                    "named": true
-                  },
-                  {
-                    "type": "union_type",
-                    "named": true
-                  }
-                ]
-              },
               {
                 "type": "declaration",
                 "named": true,
@@ -6129,6 +6043,92 @@
                 ]
               },
               {
+                "type": "primary_type",
+                "named": true,
+                "subtypes": [
+                  {
+                    "type": "array_type",
+                    "named": true
+                  },
+                  {
+                    "type": "conditional_type",
+                    "named": true
+                  },
+                  {
+                    "type": "const",
+                    "named": false
+                  },
+                  {
+                    "type": "existential_type",
+                    "named": true
+                  },
+                  {
+                    "type": "flow_maybe_type",
+                    "named": true
+                  },
+                  {
+                    "type": "generic_type",
+                    "named": true
+                  },
+                  {
+                    "type": "index_type_query",
+                    "named": true
+                  },
+                  {
+                    "type": "intersection_type",
+                    "named": true
+                  },
+                  {
+                    "type": "literal_type",
+                    "named": true
+                  },
+                  {
+                    "type": "lookup_type",
+                    "named": true
+                  },
+                  {
+                    "type": "nested_type_identifier",
+                    "named": true
+                  },
+                  {
+                    "type": "object_type",
+                    "named": true
+                  },
+                  {
+                    "type": "parenthesized_type",
+                    "named": true
+                  },
+                  {
+                    "type": "predefined_type",
+                    "named": true
+                  },
+                  {
+                    "type": "template_literal_type",
+                    "named": true
+                  },
+                  {
+                    "type": "this_type",
+                    "named": true
+                  },
+                  {
+                    "type": "tuple_type",
+                    "named": true
+                  },
+                  {
+                    "type": "type_identifier",
+                    "named": true
+                  },
+                  {
+                    "type": "type_query",
+                    "named": true
+                  },
+                  {
+                    "type": "union_type",
+                    "named": true
+                  }
+                ]
+              },
+              {
                 "type": "statement",
                 "named": true,
                 "subtypes": [
@@ -6210,6 +6210,40 @@
                   },
                   {
                     "type": "with_statement",
+                    "named": true
+                  }
+                ]
+              },
+              {
+                "type": "type",
+                "named": true,
+                "subtypes": [
+                  {
+                    "type": "call_expression",
+                    "named": true
+                  },
+                  {
+                    "type": "constructor_type",
+                    "named": true
+                  },
+                  {
+                    "type": "function_type",
+                    "named": true
+                  },
+                  {
+                    "type": "infer_type",
+                    "named": true
+                  },
+                  {
+                    "type": "member_expression",
+                    "named": true
+                  },
+                  {
+                    "type": "primary_type",
+                    "named": true
+                  },
+                  {
+                    "type": "readonly_type",
                     "named": true
                   }
                 ]
@@ -6368,23 +6402,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -6399,23 +6417,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
                       "type": "declaration",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
                       "named": true
                     },
                     {
@@ -6423,11 +6425,11 @@
                       "named": true
                     },
                     {
-                      "type": "readonly_type",
+                      "type": "statement_block",
                       "named": true
                     },
                     {
-                      "type": "statement_block",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -6499,7 +6501,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
+                      "type": "primary_type",
                       "named": true
                     }
                   ]
@@ -6582,27 +6584,11 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
                       "type": "expression",
                       "named": true
                     },
                     {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -7327,11 +7313,6 @@
                 }
               },
               {
-                "type": "comment",
-                "named": true,
-                "fields": {}
-              },
-              {
                 "type": "computed_property_name",
                 "named": true,
                 "fields": {},
@@ -7355,23 +7336,7 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -7381,23 +7346,7 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -7407,23 +7356,7 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -7433,23 +7366,7 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -7465,23 +7382,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -7542,23 +7443,7 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -7628,23 +7513,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -8022,7 +7891,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
+                      "type": "primary_type",
                       "named": true
                     }
                   ]
@@ -8424,27 +8293,11 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
                         "type": "asserts",
                         "named": true
                       },
                       {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       },
                       {
@@ -8624,16 +8477,6 @@
                 }
               },
               {
-                "type": "glimmer_closing_tag",
-                "named": true,
-                "fields": {}
-              },
-              {
-                "type": "glimmer_opening_tag",
-                "named": true,
-                "fields": {}
-              },
-              {
                 "type": "glimmer_template",
                 "named": true,
                 "fields": {
@@ -8709,23 +8552,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -8892,23 +8719,7 @@
                     "required": false,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -8980,7 +8791,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
+                      "type": "primary_type",
                       "named": true
                     }
                   ]
@@ -8995,23 +8806,11 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
+                      "type": "type",
                       "named": true
                     },
                     {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type_identifier",
                       "named": true
                     }
                   ]
@@ -9189,23 +8988,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -9565,23 +9348,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -9596,23 +9363,7 @@
                     "required": false,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -9632,23 +9383,7 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -10208,23 +9943,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -10239,23 +9958,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -10349,23 +10052,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -10503,23 +10190,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -10690,23 +10361,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -10864,23 +10519,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -10914,27 +10553,11 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
                       "type": "expression",
                       "named": true
                     },
                     {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -11221,11 +10844,11 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
+                      "type": "infer_type",
                       "named": true
                     },
                     {
-                      "type": "infer_type",
+                      "type": "primary_type",
                       "named": true
                     }
                   ]
@@ -11331,22 +10954,6 @@
                   "required": false,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
                       "type": "optional_parameter",
                       "named": true
                     },
@@ -11355,15 +10962,15 @@
                       "named": true
                     },
                     {
-                      "type": "readonly_type",
-                      "named": true
-                    },
-                    {
                       "type": "required_parameter",
                       "named": true
                     },
                     {
                       "type": "rest_type",
+                      "named": true
+                    },
+                    {
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -11398,23 +11005,7 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -11430,31 +11021,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "call_expression",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "member_expression",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -11469,31 +11036,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "call_expression",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "member_expression",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -11592,23 +11135,7 @@
                     "required": true,
                     "types": [
                       {
-                        "type": "_primary_type",
-                        "named": true
-                      },
-                      {
-                        "type": "constructor_type",
-                        "named": true
-                      },
-                      {
-                        "type": "function_type",
-                        "named": true
-                      },
-                      {
-                        "type": "infer_type",
-                        "named": true
-                      },
-                      {
-                        "type": "readonly_type",
+                        "type": "type",
                         "named": true
                       }
                     ]
@@ -11656,6 +11183,10 @@
                     },
                     {
                       "type": "subscript_expression",
+                      "named": true
+                    },
+                    {
+                      "type": "this",
                       "named": true
                     }
                   ]
@@ -11724,23 +11255,7 @@
                   "required": true,
                   "types": [
                     {
-                      "type": "_primary_type",
-                      "named": true
-                    },
-                    {
-                      "type": "constructor_type",
-                      "named": true
-                    },
-                    {
-                      "type": "function_type",
-                      "named": true
-                    },
-                    {
-                      "type": "infer_type",
-                      "named": true
-                    },
-                    {
-                      "type": "readonly_type",
+                      "type": "type",
                       "named": true
                     }
                   ]
@@ -12047,10 +11562,6 @@
                 "named": false
               },
               {
-                "type": "</template>",
-                "named": false
-              },
-              {
                 "type": "<<",
                 "named": false
               },
@@ -12060,10 +11571,6 @@
               },
               {
                 "type": "<=",
-                "named": false
-              },
-              {
-                "type": "<template>",
                 "named": false
               },
               {
@@ -12155,6 +11662,10 @@
                 "named": false
               },
               {
+                "type": "accessor",
+                "named": false
+              },
+              {
                 "type": "any",
                 "named": false
               },
@@ -12193,6 +11704,10 @@
               {
                 "type": "class",
                 "named": false
+              },
+              {
+                "type": "comment",
+                "named": true
               },
               {
                 "type": "const",
@@ -12265,6 +11780,14 @@
               {
                 "type": "get",
                 "named": false
+              },
+              {
+                "type": "glimmer_closing_tag",
+                "named": true
+              },
+              {
+                "type": "glimmer_opening_tag",
+                "named": true
               },
               {
                 "type": "global",
@@ -12939,9 +12462,6 @@
               null,
               null,
               null,
-              null,
-              null,
-              null,
               null
             ]
           }
@@ -12953,16 +12473,16 @@
       "type": "template_section",
       "start": 531,
       "end": 1506,
-      "content": "<div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n\n        {{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}\n\n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n\n        <App client=\"react\" users=\"{{users}}\"></App>\n    </div>",
+      "content": "<div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n\n        {{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{@each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}\n\n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n\n        <App client=\"react\" users=\"{{users}}\"></App>\n    </div>",
       "ast": {
-        "0": 3831348016,
-        "1": 371,
+        "0": 1139278896,
+        "1": 1,
         "2": 0,
         "3": 0,
         "4": 0,
         "5": 0,
         "tree": {
-          "input": "<div class=\"user-container\">\n        <h1>Hello, <!-- INTERPOLATION_3 -->!</h1>\n\n        <!-- IF_DIRECTIVE_1 -->\n\n        <div class=\"raw-content\">\n            <!-- RAW_HTML_2 -->\n        </div>\n\n        <!-- CLIENT_COMPONENT_5 -->\n    </div>",
+          "input": "<div class=\"user-container\">\n        <h1>Hello, <!-- INTERPOLATION_3 -->!</h1>\n\n        {<!-- IF_DIRECTIVE_1 -->}\n\n        <div class=\"raw-content\">\n            <!-- RAW_HTML_2 -->\n        </div>\n\n        <!-- CLIENT_COMPONENT_5 -->\n    </div>",
           "language": {
             "name": "html",
             "language": {},
@@ -13337,9 +12857,9 @@
           "item": "user",
           "index": "index",
           "body": "<li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>",
-          "start": 39,
-          "end": 576,
-          "original": "{{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}"
+          "start": 53,
+          "end": 590,
+          "original": "{{@each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}"
         },
         {
           "type": "if_directive",
@@ -13348,25 +12868,25 @@
             {
               "type": "if",
               "condition": "users.length > 0",
-              "body": "<ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>",
-              "processedBody": "<ul class=\"user-list\">\n                <!-- EACH_DIRECTIVE_0 -->\n            </ul>"
+              "body": "}\n            <ul class=\"user-list\">\n                {{@each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {",
+              "processedBody": "}\n            <ul class=\"user-list\">\n                <!-- EACH_DIRECTIVE_0 -->\n            </ul>\n        {"
             },
             {
               "type": "else",
               "condition": null,
-              "body": "<p class=\"empty-message\">No users found.</p>",
-              "processedBody": "<p class=\"empty-message\">No users found.</p>"
+              "body": "}\n            <p class=\"empty-message\">No users found.</p>\n        {",
+              "processedBody": "}\n            <p class=\"empty-message\">No users found.</p>\n        {"
             }
           ],
-          "start": 74,
-          "end": 796,
-          "original": "{{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}"
+          "start": 75,
+          "end": 795,
+          "original": "{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{@each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}"
         },
         {
           "type": "raw_html_directive",
           "content": "rawHtmlContent",
-          "start": 145,
-          "end": 169,
+          "start": 147,
+          "end": 171,
           "original": "{{@html rawHtmlContent}}"
         },
         {
@@ -13391,8 +12911,8 @@
             "parts": [],
             "name": "users"
           },
-          "start": 216,
-          "end": 225,
+          "start": 218,
+          "end": 227,
           "original": "{{users}}"
         },
         {
@@ -13405,8 +12925,8 @@
             "INTERPOLATION_4": true
           },
           "children": "\">",
-          "start": 203,
-          "end": 262,
+          "start": 205,
+          "end": 264,
           "original": "<App client=\"react\" users=\"<!-- INTERPOLATION_4 -->\"></App>"
         }
       ],
@@ -13418,8 +12938,8 @@
       "end": 2242,
       "content": ".user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n\n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n\n        &.with-avatar {\n            padding-left: 60px;\n        }\n\n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n\n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n\n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}",
       "ast": {
-        "0": 3831353392,
-        "1": 371,
+        "0": 1139304784,
+        "1": 1,
         "2": 0,
         "3": 0,
         "4": 0,
@@ -17881,5 +17401,5 @@
     }
   ],
   "errors": [],
-  "originalContent": "---\nuse rsx::{Request, Response};\nuse api::{fetch_data};\n\nasync fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"users\": data,\n        \"showAvatar\": false\n    })\n}\n---\n\n<script>\nimport { defineProps } from 'rsx';\nimport App from './react/app.tsx';\n\ninterface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    showAvatar: boolean;\n}>();\n</script>\n\n<template>\n    <div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n\n        {{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{#each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}\n\n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n\n        <App client=\"react\" users=\"{{users}}\"></App>\n    </div>\n</template>\n\n<style>\n.user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n\n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n\n        &.with-avatar {\n            padding-left: 60px;\n        }\n\n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n\n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n\n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}\n</style>\n"
+  "originalContent": "---\nuse rsx::{Request, Response};\nuse api::{fetch_data};\n\nasync fn get_server_side_props(req: Request) -> Response {\n    let data = fetch_data().await;\n    Response::json!({\n        \"users\": data,\n        \"showAvatar\": false\n    })\n}\n---\n\n<script>\nimport { defineProps } from 'rsx';\nimport App from './react/app.tsx';\n\ninterface User {\n    id: string;\n    name: string;\n    email: string;\n    avatar?: string;\n}\n\nconst { users, onUserClick, showAvatar } = defineProps<{\n    users: User[];\n    showAvatar: boolean;\n}>();\n</script>\n\n<template>\n    <div class=\"user-container\">\n        <h1>Hello, {{ name }}!</h1>\n\n        {{#if users.length > 0}}\n            <ul class=\"user-list\">\n                {{@each users as user, index}}\n                    <li class=\"user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}\"\n                        data-index=\"{{ index }}\">\n                        {{#if showAvatar && user.avatar}}\n                            <img src=\"{{ user.avatar }}\" alt=\"{{ user.name }}\" />\n                        {{/if}}\n                        <span class=\"user-name\">{{ user.name }}</span>\n                        <span class=\"user-email\">{{ user.email }}</span>\n                    </li>\n                {{/each}}\n            </ul>\n        {{:else}}\n            <p class=\"empty-message\">No users found.</p>\n        {{/if}}\n\n        <div class=\"raw-content\">\n            {{@html rawHtmlContent}}\n        </div>\n\n        <App client=\"react\" users=\"{{users}}\"></App>\n    </div>\n</template>\n\n<style>\n.user-container {\n    padding: 20px;\n    max-width: 800px;\n    margin: 0 auto;\n}\n\n.user-list {\n    list-style: none;\n    padding: 0;\n\n    .user-item {\n        display: flex;\n        align-items: center;\n        padding: 10px;\n        border-bottom: 1px solid #eee;\n\n        &.with-avatar {\n            padding-left: 60px;\n        }\n\n        img {\n            width: 40px;\n            height: 40px;\n            border-radius: 50%;\n            margin-right: 10px;\n        }\n\n        .user-name {\n            font-weight: bold;\n            margin-right: 10px;\n        }\n\n        .user-email {\n            color: #666;\n        }\n    }\n}\n\n.empty-message {\n    text-align: center;\n    color: #999;\n    font-style: italic;\n}\n</style>\n"
 }

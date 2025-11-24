@@ -9,29 +9,29 @@ importers:
   .:
     dependencies:
       tree-sitter:
-        specifier: ^0.21
+        specifier: ^0.21.1
         version: 0.21.1
       tree-sitter-html:
-        specifier: ^0.23
+        specifier: ^0.23.2
         version: 0.23.2(tree-sitter@0.21.1)
       tree-sitter-rust:
-        specifier: ^0.21
+        specifier: ^0.21.0
         version: 0.21.0(tree-sitter@0.21.1)
       tree-sitter-scss:
-        specifier: ^1.0
+        specifier: ^1.0.0
         version: 1.0.0(tree-sitter@0.21.1)
       tree-sitter-typescript:
-        specifier: ^0.21
-        version: 0.21.1(tree-sitter@0.21.1)
+        specifier: ^0.21.2
+        version: 0.21.2(tree-sitter@0.21.1)
     devDependencies:
       '@types/node':
-        specifier: ^22
-        version: 22.17.0
+        specifier: ^22.19.1
+        version: 22.19.1
 
 packages:
 
-  '@types/node@22.17.0':
-    resolution: {integrity: sha512-bbAKTCqX5aNVryi7qXVMi+OkB3w/OyblodicMbvE38blyAz7GxXf6XYhklokijuPwwVg9sDLKRxt0ZHXQwZVfQ==}
+  '@types/node@22.19.1':
+    resolution: {integrity: sha512-LCCV0HdSZZZb34qifBsyWlUmok6W7ouER+oQIGBScS8EsZsQbrtFTUrDX4hOl+CS6p7cnNC4td+qrSVGSCTUfQ==}
 
   nan@2.23.0:
     resolution: {integrity: sha512-1UxuyYGdoQHcGg87Lkqm3FzefucTa0NAiOcuRsDmysep3c1LVCRK2krrUDafMWtjSG04htvAmvg96+SDknOmgQ==}
@@ -75,8 +75,8 @@ packages:
       tree-sitter:
         optional: true
 
-  tree-sitter-typescript@0.21.1:
-    resolution: {integrity: sha512-emQMXz1CpVSkMUq1NEMrbJkUUdKyGrnIl++Mt4LjEeq7ttpOdotb4a2A6zSMs39ppVebFhpTlbSrAMDSEWEEjw==}
+  tree-sitter-typescript@0.21.2:
+    resolution: {integrity: sha512-/RyNK41ZpkA8PuPZimR6pGLvNR1p0ibRUJwwQn4qAjyyLEIQD/BNlwS3NSxWtGsAWZe9gZ44VK1mWx2+eQVldg==}
     peerDependencies:
       tree-sitter: ^0.21.0
       tree_sitter: '*'
@@ -92,7 +92,7 @@ packages:
 
 snapshots:
 
-  '@types/node@22.17.0':
+  '@types/node@22.19.1':
     dependencies:
       undici-types: 6.21.0
 
@@ -129,7 +129,7 @@ snapshots:
     optionalDependencies:
       tree-sitter: 0.21.1
 
-  tree-sitter-typescript@0.21.1(tree-sitter@0.21.1):
+  tree-sitter-typescript@0.21.2(tree-sitter@0.21.1):
     dependencies:
       node-addon-api: 8.5.0
       node-gyp-build: 4.8.4

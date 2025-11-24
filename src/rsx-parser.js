@@ -31,7 +31,7 @@ class RSXParser {
             type: 'rsx_file',
             sections: [],
             errors: [],
-            originalContent: content  // 保存原始内容用于验证
+            originalContent: content // 保存原始内容用于验证
         }
 
         // 解析Rust部分
@@ -142,14 +142,14 @@ class RSXParser {
         }
 
         // 统计section类型
-        parseResult.sections.forEach(section => {
+        parseResult.sections.forEach((section) => {
             const type = section.type
             stats.sectionTypes[type] = (stats.sectionTypes[type] || 0) + 1
 
             // 统计模板指令
             if (section.directives) {
                 stats.directiveCount += section.directives.length
-                section.directives.forEach(directive => {
+                section.directives.forEach((directive) => {
                     const dirType = directive.type
                     stats.directiveTypes[dirType] = (stats.directiveTypes[dirType] || 0) + 1
                 })
@@ -157,7 +157,7 @@ class RSXParser {
         })
 
         // 统计错误类型
-        parseResult.errors.forEach(error => {
+        parseResult.errors.forEach((error) => {
             const type = error.type
             stats.errorTypes[type] = (stats.errorTypes[type] || 0) + 1
         })
@@ -322,7 +322,7 @@ class RSXParser {
         // 递归处理所有模板指令，直到没有更多指令需要处理
         let hasChanges = true
         let iterations = 0
-        const maxIterations = 10 // 防止无限循环
+        const maxIterations = 10
 
         while (hasChanges && iterations < maxIterations) {
             const initialDirectiveCount = directives.length
@@ -330,9 +330,27 @@ class RSXParser {
             // 处理复杂的条件指令，支持嵌套的 else if
             processedContent = this.processIfDirectives(processedContent, directives)
 
-            // 处理循环指令 {{#each array as item, index}}
+            // 处理循环指令 {{@each array as item, index}}
             processedContent = processedContent.replace(
-                /\{\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
+                /\{\{@each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
+                (match, array, item, index, body, offset) => {
+                    directives.push({
+                        type: 'each_directive',
+                        array: array,
+                        item: item,
+                        index: index || null,
+                        body: body ? body.trim() : '',
+                        start: offset,
+                        end: offset + match.length,
+                        original: match
+                    })
+                    return `<!-- EACH_DIRECTIVE_${directives.length - 1} -->`
+                }
+            )
+
+            // 处理循环指令 {#each array as item, index}
+            processedContent = processedContent.replace(
+                /\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}([\s\S]*?)\{\/each\}/g,
                 (match, array, item, index, body, offset) => {
                     directives.push({
                         type: 'each_directive',
@@ -349,19 +367,16 @@ class RSXParser {
             )
 
             // 处理Raw HTML指令 {{@html content}}
-            processedContent = processedContent.replace(
-                /\{\{@html\s+([\w.]+)\}\}/g,
-                (match, content, offset) => {
-                    directives.push({
-                        type: 'raw_html_directive',
-                        content: content,
-                        start: offset,
-                        end: offset + match.length,
-                        original: match
-                    })
-                    return `<!-- RAW_HTML_${directives.length - 1} -->`
-                }
-            )
+            processedContent = processedContent.replace(/\{\{@html\s+([\w.]+)\}\}/g, (match, content, offset) => {
+                directives.push({
+                    type: 'raw_html_directive',
+                    content: content,
+                    start: offset,
+                    end: offset + match.length,
+                    original: match
+                })
+                return `<!-- RAW_HTML_${directives.length - 1} -->`
+            })
 
             // 检查是否有新的指令被添加
             hasChanges = directives.length > initialDirectiveCount
@@ -369,21 +384,23 @@ class RSXParser {
         }
 
         // 最后处理文本插值 {{ expression }}（必须在结构化指令之后）
-        processedContent = processedContent.replace(
-            /\{\{\s*([^}#@/:]+)\s*\}\}/g,
-            (match, expression, offset) => {
-                const parsedExpression = this.parseExpression(expression.trim())
-                directives.push({
-                    type: 'interpolation',
-                    expression: expression.trim(),
-                    parsedExpression: parsedExpression,
-                    start: offset,
-                    end: offset + match.length,
-                    original: match
-                })
-                return `<!-- INTERPOLATION_${directives.length - 1} -->`
+        processedContent = processedContent.replace(/\{\{\s*([^}#@/]+?)\s*\}\}/g, (match, expression, offset) => {
+            const trimmedExpr = expression.trim()
+            // 跳过空表达式
+            if (!trimmedExpr) {
+                return match
             }
-        )
+            const parsedExpression = this.parseExpression(trimmedExpr)
+            directives.push({
+                type: 'interpolation',
+                expression: trimmedExpr,
+                parsedExpression: parsedExpression,
+                start: offset,
+                end: offset + match.length,
+                original: match
+            })
+            return `<!-- INTERPOLATION_${directives.length - 1} -->`
+        })
 
         // 处理客户端组件
         processedContent = this.processClientComponents(processedContent, directives)
@@ -398,7 +415,6 @@ class RSXParser {
      * @returns {string} 处理后的内容
      */
     processIfDirectives(content, directives) {
-        // 使用栈来处理嵌套的if指令
         let processedContent = content
         let offset = 0
 
@@ -409,9 +425,9 @@ class RSXParser {
             let index = 0
 
             while (index < text.length) {
-                const ifMatch = text.slice(index).match(/^\{\{#if\s+([^}]+)\}\}/)
-                const elseMatch = text.slice(index).match(/^\{\{:else(?:\s+if\s+([^}]+))?\}\}/)
-                const endIfMatch = text.slice(index).match(/^\{\{\/if\}\}/)
+                const ifMatch = text.slice(index).match(/^\{#if\s+([^}]+)\}/)
+                const elseMatch = text.slice(index).match(/^\{:else(?:\s+if\s+([^}]+))?\}/)
+                const endIfMatch = text.slice(index).match(/^\{\/if\}/)
 
                 if (ifMatch) {
                     stack.push({
@@ -438,7 +454,8 @@ class RSXParser {
                     directive.end = index
                     directive.endLength = endIfMatch[0].length
 
-                    if (stack.length === 0) { // 只处理顶级if指令
+                    if (stack.length === 0) {
+                        // 只处理顶级if指令
                         matches.push(directive)
                     }
                     index += endIfMatch[0].length
@@ -497,7 +514,7 @@ class RSXParser {
             const ifDirective = {
                 type: 'if_directive',
                 condition: match.condition,
-                branches: branches.map(branch => ({
+                branches: branches.map((branch) => ({
                     ...branch,
                     // 递归处理分支内容中的嵌套指令
                     body: branch.body,
@@ -512,7 +529,8 @@ class RSXParser {
 
             // 替换内容
             const replacement = `<!-- IF_DIRECTIVE_${directives.length - 1} -->`
-            processedContent = processedContent.substring(0, match.start) +
+            processedContent =
+                processedContent.substring(0, match.start) +
                 replacement +
                 processedContent.substring(match.end + match.endLength)
         }
@@ -557,8 +575,7 @@ class RSXParser {
                 if (depth === 0) {
                     // 找到匹配的闭合标签
                     const fullMatch = content.substring(startIndex, nextClose + closeTag.length)
-                    const innerContent = content.substring(startIndex + openTag.length, nextClose)
-                        .trim()
+                    const innerContent = content.substring(startIndex + openTag.length, nextClose).trim()
 
                     return {
                         fullMatch: fullMatch,
@@ -580,12 +597,29 @@ class RSXParser {
      * @returns {string} 处理后的内容
      */
     preprocessBranchContent(content, directives) {
-        // 使用相同的预处理逻辑，但不处理客户端组件（避免重复处理）
         let processedContent = content
 
-        // 处理循环指令
+        // 处理循环指令 {{@each}}
         processedContent = processedContent.replace(
-            /\{\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
+            /\{\{@each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
+            (match, array, item, index, body, offset) => {
+                directives.push({
+                    type: 'each_directive',
+                    array: array,
+                    item: item,
+                    index: index || null,
+                    body: body ? body.trim() : '',
+                    start: offset,
+                    end: offset + match.length,
+                    original: match
+                })
+                return `<!-- EACH_DIRECTIVE_${directives.length - 1} -->`
+            }
+        )
+
+        // 处理循环指令 {#each}
+        processedContent = processedContent.replace(
+            /\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}([\s\S]*?)\{\/each\}/g,
             (match, array, item, index, body, offset) => {
                 directives.push({
                     type: 'each_directive',
@@ -605,36 +639,34 @@ class RSXParser {
         processedContent = this.processIfDirectives(processedContent, directives)
 
         // 处理Raw HTML指令
-        processedContent = processedContent.replace(
-            /\{\{@html\s+([\w.]+)\}\}/g,
-            (match, content, offset) => {
-                directives.push({
-                    type: 'raw_html_directive',
-                    content: content,
-                    start: offset,
-                    end: offset + match.length,
-                    original: match
-                })
-                return `<!-- RAW_HTML_${directives.length - 1} -->`
-            }
-        )
+        processedContent = processedContent.replace(/\{\{@html\s+([\w.]+)\}\}/g, (match, content, offset) => {
+            directives.push({
+                type: 'raw_html_directive',
+                content: content,
+                start: offset,
+                end: offset + match.length,
+                original: match
+            })
+            return `<!-- RAW_HTML_${directives.length - 1} -->`
+        })
 
         // 处理文本插值
-        processedContent = processedContent.replace(
-            /\{\{\s*([^}#@/:]+)\s*\}\}/g,
-            (match, expression, offset) => {
-                const parsedExpression = this.parseExpression(expression.trim())
-                directives.push({
-                    type: 'interpolation',
-                    expression: expression.trim(),
-                    parsedExpression: parsedExpression,
-                    start: offset,
-                    end: offset + match.length,
-                    original: match
-                })
-                return `<!-- INTERPOLATION_${directives.length - 1} -->`
+        processedContent = processedContent.replace(/\{\{\s*([^}#@/]+?)\s*\}\}/g, (match, expression, offset) => {
+            const trimmedExpr = expression.trim()
+            if (!trimmedExpr) {
+                return match
             }
-        )
+            const parsedExpression = this.parseExpression(trimmedExpr)
+            directives.push({
+                type: 'interpolation',
+                expression: trimmedExpr,
+                parsedExpression: parsedExpression,
+                start: offset,
+                end: offset + match.length,
+                original: match
+            })
+            return `<!-- INTERPOLATION_${directives.length - 1} -->`
+        })
 
         return processedContent
     }
@@ -646,27 +678,59 @@ class RSXParser {
      * @returns {string} 处理后的内容
      */
     processClientComponents(content, directives) {
-        // 匹配带有client属性的组件
-        const clientComponentPattern = /<(\w+)([^>]*?client\s*=\s*["']([^"']+)["'][^>]*?)(?:\/>|>([\s\S]*?)<\/\1>)/g
+        let processedContent = content
+        const clientComponentPattern = /<(\w+)([^>]*?client\s*=\s*["']([^"']+)["'][^>]*?)(\/?>)/g
 
-        return content.replace(
-            clientComponentPattern,
-            (match, tagName, attributes, clientType, children, offset) => {
-                const component = {
-                    type: 'client_component',
-                    tagName: tagName,
-                    clientType: clientType, // react, vue, svelte
-                    attributes: this.parseAttributes(attributes),
-                    children: children ? children.trim() : '',
-                    start: offset,
-                    end: offset + match.length,
-                    original: match
+        let match
+        const replacements = []
+
+        while ((match = clientComponentPattern.exec(content)) !== null) {
+            const [fullMatch, tagName, attributes, clientType, closingTag] = match
+            const isSelfClosing = closingTag === '/>'
+            let children = ''
+            let endTag = ''
+            let fullComponentMatch = fullMatch
+
+            if (!isSelfClosing) {
+                const endTagPattern = new RegExp(`</${tagName}>`, 'g')
+                endTagPattern.lastIndex = match.index + fullMatch.length
+                const endMatch = endTagPattern.exec(content)
+
+                if (endMatch) {
+                    children = content.substring(match.index + fullMatch.length, endMatch.index)
+                    endTag = endMatch[0]
+                    fullComponentMatch = content.substring(match.index, endMatch.index + endTag.length)
                 }
-
-                directives.push(component)
-                return `<!-- CLIENT_COMPONENT_${directives.length - 1} -->`
             }
-        )
+
+            const component = {
+                type: 'client_component',
+                tagName: tagName,
+                clientType: clientType,
+                attributes: this.parseAttributes(attributes),
+                children: children.trim(),
+                start: match.index,
+                end: match.index + fullComponentMatch.length,
+                original: fullComponentMatch
+            }
+
+            replacements.push({
+                start: match.index,
+                end: match.index + fullComponentMatch.length,
+                replacement: `<!-- CLIENT_COMPONENT_${directives.length} -->`,
+                component: component
+            })
+
+            directives.push(component)
+        }
+
+        // 从后往前替换，避免位置偏移
+        for (let i = replacements.length - 1; i >= 0; i--) {
+            const { start, end, replacement } = replacements[i]
+            processedContent = processedContent.substring(0, start) + replacement + processedContent.substring(end)
+        }
+
+        return processedContent
     }
 
     /**
@@ -712,39 +776,67 @@ class RSXParser {
             }
         }
 
-        // 检查是否是属性访问
-        if (expression.includes('.')) {
-            result.type = 'property_access'
-            result.parts = expression.split('.')
-            return result
-        }
-
         // 检查是否是函数调用
         if (expression.includes('(') && expression.includes(')')) {
             const funcMatch = expression.match(/^([\w.]+)\((.*)\)$/)
             if (funcMatch) {
                 result.type = 'function_call'
                 result.function = funcMatch[1]
-                result.arguments = funcMatch[2]
-                    ? funcMatch[2].split(',').map(arg => arg.trim())
-                    : []
+                result.arguments = funcMatch[2] ? funcMatch[2].split(',').map((arg) => arg.trim()) : []
                 return result
             }
         }
 
-        // 检查是否是二元表达式
-        const binaryOperators = ['>', '<', '>=', '<=', '==', '!=', '&&', '||', '+', '-', '*', '/']
-        for (const op of binaryOperators) {
-            if (expression.includes(op)) {
-                const parts = expression.split(op)
-                if (parts.length === 2) {
-                    result.type = 'binary_expression'
-                    result.operator = op
-                    result.left = parts[0].trim()
-                    result.right = parts[1].trim()
-                    return result
+        // 检查是否是二元表达式（按优先级从低到高）
+        const binaryOperators = [
+            { ops: ['||'], name: 'logical_or' },
+            { ops: ['&&'], name: 'logical_and' },
+            { ops: ['==', '!='], name: 'equality' },
+            { ops: ['>=', '<=', '>', '<'], name: 'comparison' },
+            { ops: ['+', '-'], name: 'additive' },
+            { ops: ['*', '/'], name: 'multiplicative' }
+        ]
+
+        for (const { ops, name } of binaryOperators) {
+            for (const op of ops) {
+                const opIndex = expression.indexOf(op)
+                if (opIndex !== -1) {
+                    // 确保不是其他运算符的一部分
+                    const before = expression[opIndex - 1]
+                    const after = expression[opIndex + op.length]
+                    if ((op === '>' || op === '<') && (after === '=' || before === '=')) {
+                        continue
+                    }
+                    if ((op === '=' || op === '!') && after !== '=') {
+                        continue
+                    }
+
+                    const parts = expression.split(op)
+                    if (parts.length >= 2) {
+                        result.type = 'binary_expression'
+                        result.operator = op
+                        result.operatorType = name
+                        result.left = parts[0].trim()
+                        result.right = parts.slice(1).join(op).trim()
+                        return result
+                    }
                 }
             }
+        }
+
+        // 检查是否是一元表达式
+        if (expression.startsWith('!') || expression.startsWith('-')) {
+            result.type = 'unary_expression'
+            result.operator = expression[0]
+            result.operand = expression.slice(1).trim()
+            return result
+        }
+
+        // 检查是否是属性访问
+        if (expression.includes('.')) {
+            result.type = 'property_access'
+            result.parts = expression.split('.')
+            return result
         }
 
         // 简单标识符
@@ -802,11 +894,11 @@ class RSXParser {
         const sections = parseResult.sections
 
         // 1. 检查是否有重复的section（通过extractSections的count检查）
-        const sectionTypes = sections.map(s => s.type)
+        const sectionTypes = sections.map((s) => s.type)
         const duplicates = []
         const seenTypes = new Set()
 
-        sectionTypes.forEach(type => {
+        sectionTypes.forEach((type) => {
             if (seenTypes.has(type)) {
                 if (!duplicates.includes(type)) {
                     duplicates.push(type)
@@ -816,7 +908,7 @@ class RSXParser {
             }
         })
 
-        duplicates.forEach(type => {
+        duplicates.forEach((type) => {
             errors.push({
                 type: 'duplicate_section',
                 message: `代码块只能出现一次，发现重复的 ${type}`,
@@ -828,7 +920,7 @@ class RSXParser {
         errors.push(...this.checkDuplicateSections(parseResult.originalContent || ''))
 
         // 验证各个section的内容
-        sections.forEach(section => {
+        sections.forEach((section) => {
             switch (section.type) {
                 case 'rust_section':
                     errors.push(...this.validateRustSection(section))
@@ -954,7 +1046,7 @@ class RSXParser {
         const interfaces = section.content.match(interfacePattern)
 
         if (interfaces) {
-            interfaces.forEach(interfaceStr => {
+            interfaces.forEach((interfaceStr) => {
                 // 简单检查接口是否有属性
                 if (!interfaceStr.includes(':')) {
                     errors.push({
@@ -982,7 +1074,7 @@ class RSXParser {
         const forbiddenTags = ['template', 'script', 'style']
         const content = section.content
 
-        forbiddenTags.forEach(tag => {
+        forbiddenTags.forEach((tag) => {
             const tagPattern = new RegExp(`<${tag}[^>]*>`, 'gi')
             const matches = content.match(tagPattern)
             if (matches) {
@@ -1132,7 +1224,7 @@ class RSXParser {
             }
 
             if (foundEvents.size > 0) {
-                foundEvents.forEach(event => {
+                foundEvents.forEach((event) => {
                     htmlTagsWithAttributes.push({
                         tagName: tagName,
                         event: event,
@@ -1143,7 +1235,7 @@ class RSXParser {
         }
 
         // 为找到的事件属性添加错误
-        htmlTagsWithAttributes.forEach(tagWithEvent => {
+        htmlTagsWithAttributes.forEach((tagWithEvent) => {
             errors.push({
                 type: 'forbidden_event_attribute',
                 message: `HTML标签 <${tagWithEvent.tagName}> 中不允许使用事件属性: ${tagWithEvent.event}`,
@@ -1154,7 +1246,7 @@ class RSXParser {
 
         // 检查模板指令的正确性
         if (section.directives) {
-            section.directives.forEach(directive => {
+            section.directives.forEach((directive) => {
                 switch (directive.type) {
                     case 'if_directive':
                         if (!directive.condition || directive.condition.trim() === '') {
@@ -1226,13 +1318,15 @@ class RSXParser {
      * @returns {string} 格式化的错误信息
      */
     formatErrors(errors) {
-        return errors.map(error => {
-            const pos = error.start
-                ? `Line ${error.start.row + 1}, Column ${error.start.column + 1}`
-                : 'Unknown position'
-            return `${error.type}: ${error.message} (${pos})`;
-        }).join('\n');
+        return errors
+            .map((error) => {
+                const pos = error.start
+                    ? `Line ${error.start.row + 1}, Column ${error.start.column + 1}`
+                    : 'Unknown position'
+                return `${error.type}: ${error.message} (${pos})`
+            })
+            .join('\n')
     }
 }
 
-module.exports = RSXParser;
+module.exports = RSXParser

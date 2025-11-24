@@ -34,7 +34,7 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
         {{#if users.length > 0}}
             <ul class="user-list">
-                {{#each users as user, index}}
+                {{@each users as user, index}}
                     <li class="user-item {{ showAvatar ? 'with-avatar' : 'no-avatar' }}"
                         data-index="{{ index }}">
                         {{#if showAvatar && user.avatar}}

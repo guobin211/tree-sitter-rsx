@@ -1,36 +1,36 @@
 {
-  "name": "tree-sitter-rsx",
-  "version": "0.1.3",
-  "description": "The rsx language",
-  "repository": "https://github.com/guobin211/tree-sitter-rsx",
-  "license": "MIT",
-  "author": {
-    "name": "michael",
-    "email": "michaelbguo@tencent.com"
-  },
-  "main": "./src/rsx-parser.js",
-  "types": "./src/rsx-parser.d.ts",
-  "keywords": [
-    "incremental",
-    "parsing",
-    "tree-sitter",
-    "rsx"
-  ],
-  "files": [
-    "src/**"
-  ],
-  "dependencies": {
-    "tree-sitter": "^0.21",
-    "tree-sitter-html": "^0.23",
-    "tree-sitter-rust": "^0.21",
-    "tree-sitter-scss": "^1.0",
-    "tree-sitter-typescript": "^0.21"
-  },
-  "devDependencies": {
-    "@types/node": "^22"
-  },
-  "scripts": {
-    "dev": "tree-sitter generate && tree-sitter build --wasm",
-    "test": "node --test example/test-parser.js"
-  }
+    "name": "tree-sitter-rsx",
+    "version": "0.1.4",
+    "description": "The rsx language",
+    "repository": "https://github.com/guobin211/tree-sitter-rsx",
+    "license": "MIT",
+    "author": {
+        "name": "michael",
+        "email": "michaelbguo@tencent.com"
+    },
+    "main": "./src/rsx-parser.js",
+    "types": "./src/rsx-parser.d.ts",
+    "keywords": [
+        "incremental",
+        "parsing",
+        "tree-sitter",
+        "rsx"
+    ],
+    "files": [
+        "src/**"
+    ],
+    "dependencies": {
+        "tree-sitter": "^0.21.1",
+        "tree-sitter-html": "^0.23.2",
+        "tree-sitter-rust": "^0.21.0",
+        "tree-sitter-scss": "^1.0.0",
+        "tree-sitter-typescript": "^0.21.2"
+    },
+    "devDependencies": {
+        "@types/node": "^22.19.1"
+    },
+    "scripts": {
+        "dev": "tree-sitter generate && tree-sitter build --wasm",
+        "test": "node --test example/test-parser.js"
+    }
 }
