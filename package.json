@@ -17,8 +17,38 @@
         "rsx"
     ],
     "files": [
-        "src/**"
+        "src/**",
+        "syntaxes/**",
+        "language-configuration.json"
     ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "rsx",
+                "aliases": ["RSX", "rsx"],
+                "extensions": [".rsx"],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "rsx",
+                "scopeName": "source.rsx",
+                "path": "./syntaxes/rsx.tmLanguage.json",
+                "embeddedLanguages": {
+                    "meta.section.rust.rsx": "rust",
+                    "meta.section.script.rsx": "typescript",
+                    "meta.section.style.rsx": "scss"
+                }
+            }
+        ],
+        "snippets": [
+            {
+                "language": "rsx",
+                "path": "./syntaxes/rsx.snippets.json"
+            }
+        ]
+    },
     "dependencies": {
         "tree-sitter": "^0.21.1",
         "tree-sitter-html": "^0.23.2",

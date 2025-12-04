@@ -413,6 +413,10 @@
                 },
                 {
                     "type": "SYMBOL",
+                    "name": "each_directive_alt"
+                },
+                {
+                    "type": "SYMBOL",
                     "name": "raw_html_directive"
                 }
             ]
@@ -422,7 +426,7 @@
             "members": [
                 {
                     "type": "STRING",
-                    "value": "{#if"
+                    "value": "{{#if"
                 },
                 {
                     "type": "PATTERN",
@@ -438,7 +442,7 @@
                 },
                 {
                     "type": "STRING",
-                    "value": "}"
+                    "value": "}}"
                 },
                 {
                     "type": "FIELD",
@@ -481,7 +485,7 @@
                 },
                 {
                     "type": "STRING",
-                    "value": "{/if}"
+                    "value": "{{/if}}"
                 }
             ]
         },
@@ -490,7 +494,7 @@
             "members": [
                 {
                     "type": "STRING",
-                    "value": "{:else"
+                    "value": "{{:else"
                 },
                 {
                     "type": "PATTERN",
@@ -514,7 +518,7 @@
                 },
                 {
                     "type": "STRING",
-                    "value": "}"
+                    "value": "}}"
                 },
                 {
                     "type": "FIELD",
@@ -543,7 +547,7 @@
             "members": [
                 {
                     "type": "STRING",
-                    "value": "{:else}"
+                    "value": "{{:else}}"
                 },
                 {
                     "type": "FIELD",
@@ -572,7 +576,7 @@
             "members": [
                 {
                     "type": "STRING",
-                    "value": "{#each"
+                    "value": "{{#each"
                 },
                 {
                     "type": "PATTERN",
@@ -646,7 +650,7 @@
                 },
                 {
                     "type": "STRING",
-                    "value": "}"
+                    "value": "}}"
                 },
                 {
                     "type": "FIELD",
@@ -670,7 +674,114 @@
                 },
                 {
                     "type": "STRING",
-                    "value": "{/each}"
+                    "value": "{{/each}}"
+                }
+            ]
+        },
+        "each_directive_alt": {
+            "type": "SEQ",
+            "members": [
+                {
+                    "type": "STRING",
+                    "value": "{{@each"
+                },
+                {
+                    "type": "PATTERN",
+                    "value": "\\s+"
+                },
+                {
+                    "type": "FIELD",
+                    "name": "array",
+                    "content": {
+                        "type": "CHOICE",
+                        "members": [
+                            {
+                                "type": "SYMBOL",
+                                "name": "identifier"
+                            },
+                            {
+                                "type": "SYMBOL",
+                                "name": "property_access"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "PATTERN",
+                    "value": "\\s+"
+                },
+                {
+                    "type": "STRING",
+                    "value": "as"
+                },
+                {
+                    "type": "PATTERN",
+                    "value": "\\s+"
+                },
+                {
+                    "type": "FIELD",
+                    "name": "item",
+                    "content": {
+                        "type": "SYMBOL",
+                        "name": "identifier"
+                    }
+                },
+                {
+                    "type": "CHOICE",
+                    "members": [
+                        {
+                            "type": "SEQ",
+                            "members": [
+                                {
+                                    "type": "STRING",
+                                    "value": ","
+                                },
+                                {
+                                    "type": "PATTERN",
+                                    "value": "\\s*"
+                                },
+                                {
+                                    "type": "FIELD",
+                                    "name": "index",
+                                    "content": {
+                                        "type": "SYMBOL",
+                                        "name": "identifier"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "BLANK"
+                        }
+                    ]
+                },
+                {
+                    "type": "STRING",
+                    "value": "}}"
+                },
+                {
+                    "type": "FIELD",
+                    "name": "body",
+                    "content": {
+                        "type": "REPEAT",
+                        "content": {
+                            "type": "CHOICE",
+                            "members": [
+                                {
+                                    "type": "SYMBOL",
+                                    "name": "template_body"
+                                },
+                                {
+                                    "type": "PATTERN",
+                                    "value": "[^{]+"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "STRING",
+                    "value": "{{/each}}"
                 }
             ]
         },

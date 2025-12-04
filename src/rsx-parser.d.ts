@@ -2,6 +2,21 @@
 import type { Parser, Tree, SyntaxNode, Point } from 'tree-sitter'
 
 /**
+ * 支持的客户端框架类型
+ */
+export type ClientType = 'react' | 'vue' | 'svelte'
+
+/**
+ * 错误严重级别
+ */
+export type ErrorSeverity = 'error' | 'warning' | 'info'
+
+/**
+ * Section 类型
+ */
+export type SectionType = 'rust_section' | 'script_section' | 'template_section' | 'style_section'
+
+/**
  * 表示代码中的一个位置点
  */
 export interface Position {
@@ -17,6 +32,8 @@ export interface ParseError {
     message: string
     start?: Position | number
     end?: Position
+    severity?: ErrorSeverity
+    section?: string
 }
 
 /**
@@ -36,13 +53,14 @@ export interface SectionContent {
     content: string
     start: number
     end: number
+    count?: number
 }
 
 /**
  * 表示一个已解析的代码区块
  */
 export interface ParsedSection extends SectionContent {
-    type: 'rust_section' | 'script_section' | 'style_section'
+    type: SectionType
     ast: SyntaxNode
     errors: SyntaxError[]
 }
@@ -58,11 +76,42 @@ export interface Directive {
 }
 
 /**
+ * 解析后的表达式
+ */
+export interface ParsedExpression {
+    type: 'unknown' | 'conditional' | 'function_call' | 'binary_expression' | 'unary_expression' | 'property_access' | 'identifier'
+    raw: string
+    parts?: string[]
+    condition?: string
+    trueValue?: string
+    falseValue?: string
+    function?: string
+    arguments?: string[]
+    operator?: string
+    operatorType?: string
+    left?: string
+    right?: string
+    operand?: string
+    name?: string
+}
+
+/**
  * 文本插值指令 {{ expression }}
  */
 export interface InterpolationDirective extends Directive {
     type: 'interpolation'
     expression: string
+    parsedExpression: ParsedExpression
+}
+
+/**
+ * 条件分支
+ */
+export interface ConditionBranch {
+    type: 'if' | 'else_if' | 'else'
+    condition: string | null
+    body: string
+    processedBody?: string
 }
 
 /**
@@ -71,14 +120,11 @@ export interface InterpolationDirective extends Directive {
 export interface IfDirective extends Directive {
     type: 'if_directive'
     condition: string
-    thenBody: string
-    elseIfCondition: string | null
-    elseIfBody: string | null
-    elseBody: string | null
+    branches: ConditionBranch[]
 }
 
 /**
- * 循环指令 {#each} ... {/each}
+ * 循环指令 {#each} 或 {{@each}}
  */
 export interface EachDirective extends Directive {
     type: 'each_directive'
@@ -96,7 +142,18 @@ export interface RawHTMLDirective extends Directive {
     content: string
 }
 
-export type AnyDirective = InterpolationDirective | IfDirective | EachDirective | RawHTMLDirective
+/**
+ * 客户端组件
+ */
+export interface ClientComponentDirective extends Directive {
+    type: 'client_component'
+    tagName: string
+    clientType: ClientType
+    attributes: Record<string, string | boolean>
+    children: string
+}
+
+export type AnyDirective = InterpolationDirective | IfDirective | EachDirective | RawHTMLDirective | ClientComponentDirective
 
 /**
  * 表示已解析的模板区块
@@ -125,6 +182,19 @@ export interface RSXFile {
     type: 'rsx_file'
     sections: (ParsedSection | TemplateSection)[]
     errors: ParseError[]
+    originalContent?: string
+}
+
+/**
+ * 解析统计信息
+ */
+export interface ParseStatistics {
+    totalSections: number
+    sectionTypes: Record<string, number>
+    totalErrors: number
+    errorTypes: Record<string, number>
+    directiveCount: number
+    directiveTypes: Record<string, number>
 }
 
 /**
@@ -140,22 +210,26 @@ export default class RSXParser {
 
     /**
      * 解析RSX文件内容
-     * @param content - RSX文件内容
-     * @returns 解析结果对象
      */
     parse(content: string): RSXFile
 
     /**
+     * 获取解析统计信息
+     */
+    getParseStatistics(parseResult: RSXFile): ParseStatistics
+
+    /**
+     * 生成解析报告
+     */
+    generateReport(parseResult: RSXFile): string
+
+    /**
      * 从RSX内容中提取各个部分
-     * @param content - RSX文件内容
-     * @returns 包含各部分内容的对象
      */
     extractSections(content: string): ExtractedSections
 
     /**
      * 解析Template部分，处理模板指令
-     * @param content - Template内容
-     * @returns 解析结果
      */
     parseTemplate(content: string): {
         ast: SyntaxNode | null
@@ -165,23 +239,26 @@ export default class RSXParser {
 
     /**
      * 预处理Template内容，提取模板指令并替换为占位符
-     * @param content - 原始模板内容
-     * @param directives - 用于存储提取出的指令的数组
-     * @returns 处理后的HTML内容
      */
     preprocessTemplate(content: string, directives: AnyDirective[]): string
 
     /**
+     * 解析表达式
+     */
+    parseExpression(expression: string): ParsedExpression
+
+    /**
      * 从Tree-sitter树中提取错误
-     * @param tree - Tree-sitter解析树
-     * @returns 错误列表
      */
     extractErrors(tree: Tree): SyntaxError[]
 
     /**
+     * 验证RSX文件结构
+     */
+    validateRSXStructure(parseResult: RSXFile): ParseError[]
+
+    /**
      * 格式化错误信息
-     * @param errors - 错误列表
-     * @returns 格式化的错误信息字符串
      */
     formatErrors(errors: ParseError[]): string
 }

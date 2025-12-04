@@ -4,9 +4,30 @@ const TypeScript = require('tree-sitter-typescript').typescript
 const HTML = require('tree-sitter-html')
 const SCSS = require('tree-sitter-scss')
 
+// 指令类型常量
+const DIRECTIVE_TYPES = {
+    IF: 'if_directive',
+    EACH: 'each_directive',
+    RAW_HTML: 'raw_html_directive',
+    INTERPOLATION: 'interpolation',
+    CLIENT_COMPONENT: 'client_component'
+}
+
+// 支持的客户端框架
+const SUPPORTED_CLIENT_TYPES = ['react', 'vue', 'svelte']
+
+// 二元运算符优先级（从低到高）
+const BINARY_OPERATORS = [
+    { ops: ['||'], name: 'logical_or' },
+    { ops: ['&&'], name: 'logical_and' },
+    { ops: ['==', '!='], name: 'equality' },
+    { ops: ['>=', '<=', '>', '<'], name: 'comparison' },
+    { ops: ['+', '-'], name: 'additive' },
+    { ops: ['*', '/'], name: 'multiplicative' }
+]
+
 class RSXParser {
     constructor() {
-        // 初始化各种语言的解析器
         this.rustParser = new Parser()
         this.rustParser.setLanguage(Rust)
 
@@ -348,9 +369,9 @@ class RSXParser {
                 }
             )
 
-            // 处理循环指令 {#each array as item, index}
+            // 处理循环指令 {{#each array as item, index}}
             processedContent = processedContent.replace(
-                /\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}([\s\S]*?)\{\/each\}/g,
+                /\{\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
                 (match, array, item, index, body, offset) => {
                     directives.push({
                         type: 'each_directive',
@@ -418,16 +439,19 @@ class RSXParser {
         let processedContent = content
         let offset = 0
 
-        // 找到所有if指令的开始和结束位置
+        // 找到所有if指令的开始和结束位置（双大括号语法）
         const findMatchingDirectives = (text) => {
             const stack = []
             const matches = []
             let index = 0
 
             while (index < text.length) {
-                const ifMatch = text.slice(index).match(/^\{#if\s+([^}]+)\}/)
-                const elseMatch = text.slice(index).match(/^\{:else(?:\s+if\s+([^}]+))?\}/)
-                const endIfMatch = text.slice(index).match(/^\{\/if\}/)
+                // 匹配 {{#if condition}}
+                const ifMatch = text.slice(index).match(/^\{\{#if\s+([^}]+)\}\}/)
+                // 匹配 {{:else}} 或 {{:else if condition}}
+                const elseMatch = text.slice(index).match(/^\{\{:else(?:\s+if\s+([^}]+))?\}\}/)
+                // 匹配 {{/if}}
+                const endIfMatch = text.slice(index).match(/^\{\{\/if\}\}/)
 
                 if (ifMatch) {
                     stack.push({
@@ -455,7 +479,6 @@ class RSXParser {
                     directive.endLength = endIfMatch[0].length
 
                     if (stack.length === 0) {
-                        // 只处理顶级if指令
                         matches.push(directive)
                     }
                     index += endIfMatch[0].length
@@ -617,9 +640,9 @@ class RSXParser {
             }
         )
 
-        // 处理循环指令 {#each}
+        // 处理循环指令 {{#each}}
         processedContent = processedContent.replace(
-            /\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}([\s\S]*?)\{\/each\}/g,
+            /\{\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
             (match, array, item, index, body, offset) => {
                 directives.push({
                     type: 'each_directive',
@@ -788,20 +811,10 @@ class RSXParser {
         }
 
         // 检查是否是二元表达式（按优先级从低到高）
-        const binaryOperators = [
-            { ops: ['||'], name: 'logical_or' },
-            { ops: ['&&'], name: 'logical_and' },
-            { ops: ['==', '!='], name: 'equality' },
-            { ops: ['>=', '<=', '>', '<'], name: 'comparison' },
-            { ops: ['+', '-'], name: 'additive' },
-            { ops: ['*', '/'], name: 'multiplicative' }
-        ]
-
-        for (const { ops, name } of binaryOperators) {
+        for (const { ops, name } of BINARY_OPERATORS) {
             for (const op of ops) {
                 const opIndex = expression.indexOf(op)
                 if (opIndex !== -1) {
-                    // 确保不是其他运算符的一部分
                     const before = expression[opIndex - 1]
                     const after = expression[opIndex + op.length]
                     if ((op === '>' || op === '<') && (after === '=' || before === '=')) {
@@ -1269,10 +1282,10 @@ class RSXParser {
                         }
                         break
                     case 'client_component':
-                        if (!['react', 'vue', 'svelte'].includes(directive.clientType)) {
+                        if (!SUPPORTED_CLIENT_TYPES.includes(directive.clientType)) {
                             errors.push({
                                 type: 'invalid_client_type',
-                                message: `不支持的客户端组件类型: ${directive.clientType}`,
+                                message: `不支持的客户端组件类型: ${directive.clientType}，支持的类型: ${SUPPORTED_CLIENT_TYPES.join(', ')}`,
                                 severity: 'error',
                                 section: 'template'
                             })

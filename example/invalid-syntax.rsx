@@ -15,17 +15,17 @@ const { users } = defineProps<{
 
 <template>
     <div>
-        <h1>Hello, {name}!</h1>
+        <h1>Hello, {{ name }}!</h1>
 
-        {#if users.length > 0}
+        {{#if users.length > 0}}
             <ul>
-                {#each users as user}
-                    <li>{user}</li>
-                {/each}
+                {{#each users as user}}
+                    <li>{{ user }}</li>
+                {{/each}}
             </ul>
-        {:else}
+        {{:else}}
             <p>No users</p>
-        {/if}
+        {{/if}}
     </div>
 </template>
 
