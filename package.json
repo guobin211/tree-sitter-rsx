@@ -1,6 +1,6 @@
 {
     "name": "tree-sitter-rsx",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "description": "Tree-sitter grammar for RSX language",
     "repository": "https://github.com/guobin211/tree-sitter-rsx",
     "license": "MIT",
@@ -8,8 +8,8 @@
         "name": "michael",
         "email": "michaelbguo@tencent.com"
     },
-    "main": "src/rsx-parser.js",
-    "types": "src/rsx-parser.d.ts",
+    "main": "bindings/node",
+    "types": "bindings/node/index.d.ts",
     "keywords": [
         "incremental",
         "parsing",
@@ -20,6 +20,7 @@
         "grammar.js",
         "binding.gyp",
         "bindings/node/*",
+        "parser/*",
         "queries/*",
         "src/**",
         "*.wasm"
@@ -68,7 +69,8 @@
         "tree-sitter-html": "^0.23.2",
         "tree-sitter-rust": "^0.21.0",
         "tree-sitter-scss": "^1.0.0",
-        "tree-sitter-typescript": "^0.21.2"
+        "tree-sitter-typescript": "^0.21.2",
+        "nan": "^2.18.0"
     },
     "devDependencies": {
         "@types/node": "^22.19.1",
@@ -77,9 +79,10 @@
     "scripts": {
         "build": "tree-sitter generate",
         "build:wasm": "tree-sitter build --wasm",
+        "build:node": "node-gyp rebuild",
         "test": "tree-sitter test",
-        "parse": "tree-sitter parse",
-        "test:node": "node test-parser.js"
+        "test:example": "node example/test-parser.js",
+        "parse": "tree-sitter parse"
     },
     "peerDependencies": {
         "tree-sitter": "^0.21.0"
