@@ -64,7 +64,6 @@
       "patterns": [
         { "include": "#template-directive-if" },
         { "include": "#template-directive-each" },
-        { "include": "#template-directive-each-alt" },
         { "include": "#template-directive-else" },
         { "include": "#template-directive-html" },
         { "include": "#template-interpolation" },
@@ -76,7 +75,7 @@
       "patterns": [
         {
           "name": "meta.directive.if.rsx",
-          "match": "(\\{\\{#if)\\s+(.+?)(\\}\\})",
+          "match": "(\\{\\{@if)\\s+(.+?)(\\}\\})",
           "captures": {
             "1": { "name": "keyword.control.directive.if.rsx" },
             "2": { "name": "meta.expression.rsx", "patterns": [{ "include": "#expression" }] },
@@ -103,12 +102,20 @@
         },
         {
           "name": "meta.directive.else-if.rsx",
-          "match": "(\\{\\{:else)\\s+(if)\\s+(.+?)(\\}\\})",
+          "match": "(\\{\\{:else\\s+if)\\s+(.+?)(\\}\\})",
           "captures": {
-            "1": { "name": "keyword.control.directive.else.rsx" },
-            "2": { "name": "keyword.control.directive.if.rsx" },
-            "3": { "name": "meta.expression.rsx", "patterns": [{ "include": "#expression" }] },
-            "4": { "name": "keyword.control.directive.end.rsx" }
+            "1": { "name": "keyword.control.directive.else-if.rsx" },
+            "2": { "name": "meta.expression.rsx", "patterns": [{ "include": "#expression" }] },
+            "3": { "name": "keyword.control.directive.end.rsx" }
+          }
+        },
+        {
+          "name": "meta.directive.elseif.rsx",
+          "match": "(\\{\\{:elseif)\\s+(.+?)(\\}\\})",
+          "captures": {
+            "1": { "name": "keyword.control.directive.elseif.rsx" },
+            "2": { "name": "meta.expression.rsx", "patterns": [{ "include": "#expression" }] },
+            "3": { "name": "keyword.control.directive.end.rsx" }
           }
         }
       ]
@@ -117,7 +124,7 @@
       "patterns": [
         {
           "name": "meta.directive.each.rsx",
-          "match": "(\\{\\{#each)\\s+(.+?)\\s+(as)\\s+(\\w+)(?:\\s*,\\s*(\\w+))?(\\}\\})",
+          "match": "(\\{\\{@each)\\s+(.+?)\\s+(as)\\s+(\\w+)(?:\\s*,\\s*(\\w+))?(\\}\\})",
           "captures": {
             "1": { "name": "keyword.control.directive.each.rsx" },
             "2": { "name": "variable.other.rsx" },
@@ -132,22 +139,6 @@
           "match": "(\\{\\{/each\\}\\})",
           "captures": {
             "1": { "name": "keyword.control.directive.endeach.rsx" }
-          }
-        }
-      ]
-    },
-    "template-directive-each-alt": {
-      "patterns": [
-        {
-          "name": "meta.directive.each-alt.rsx",
-          "match": "(\\{\\{@each)\\s+(.+?)\\s+(as)\\s+(\\w+)(?:\\s*,\\s*(\\w+))?(\\}\\})",
-          "captures": {
-            "1": { "name": "keyword.control.directive.each.rsx" },
-            "2": { "name": "variable.other.rsx" },
-            "3": { "name": "keyword.operator.as.rsx" },
-            "4": { "name": "variable.parameter.item.rsx" },
-            "5": { "name": "variable.parameter.index.rsx" },
-            "6": { "name": "keyword.control.directive.end.rsx" }
           }
         }
       ]

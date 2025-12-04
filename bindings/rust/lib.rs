@@ -1,6 +1,6 @@
 //! This crate provides RSX language support for the [tree-sitter][] parsing library.
 //!
-//! Typically, you will use the [language][language func] function to add this language to a
+//! Typically, you will use the [LANGUAGE][language func] function to add this language to a
 //! tree-sitter [Parser][], and then use the parser to parse some code:
 //!
 //! ```
@@ -13,7 +13,8 @@
 //! </template>
 //! "#;
 //! let mut parser = tree_sitter::Parser::new();
-//! parser.set_language(tree_sitter_rsx::language()).expect("Error loading RSX grammar");
+//! let language = tree_sitter_rsx::LANGUAGE.into();
+//! parser.set_language(&language).expect("Error loading RSX grammar");
 //! let tree = parser.parse(code, None).unwrap();
 //! ```
 //!
@@ -22,18 +23,14 @@
 //! [Parser]: https://docs.rs/tree-sitter/*/tree_sitter/struct.Parser.html
 //! [tree-sitter]: https://tree-sitter.github.io/
 
-use tree_sitter::Language;
+use tree_sitter_language::LanguageFn;
 
 extern "C" {
-    fn tree_sitter_rsx() -> Language;
+    fn tree_sitter_rsx() -> *const ();
 }
 
-/// Get the tree-sitter [Language][] for this grammar.
-///
-/// [Language]: https://docs.rs/tree-sitter/*/tree_sitter/struct.Language.html
-pub fn language() -> Language {
-    unsafe { tree_sitter_rsx() }
-}
+/// The tree-sitter [`LanguageFn`] for this grammar.
+pub const LANGUAGE: LanguageFn = unsafe { LanguageFn::from_raw(tree_sitter_rsx) };
 
 /// The content of the [`node-types.json`][] file for this grammar.
 ///
@@ -54,8 +51,9 @@ mod tests {
     #[test]
     fn test_can_load_grammar() {
         let mut parser = tree_sitter::Parser::new();
+        let language = super::LANGUAGE.into();
         parser
-            .set_language(super::language())
+            .set_language(&language)
             .expect("Error loading RSX grammar");
     }
 }

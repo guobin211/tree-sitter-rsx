@@ -159,7 +159,7 @@ Supports `if`, `else if`, `else` conditional rendering:
 
 ```html
 <template>
-    {{#if porridge.temperature > 100}}
+    {{@if porridge.temperature > 100}}
     <p>too hot!</p>
     {{:else if 80 > porridge.temperature}}
     <p>too cold!</p>
@@ -171,12 +171,12 @@ Supports `if`, `else if`, `else` conditional rendering:
 
 #### List Rendering
 
-Use `{{#each}}` or `{{@each}}` for list rendering, with index support:
+Use `{{@each}}` for list rendering, with index support:
 
 ```html
 <template>
     <ul class="user-list">
-        {{#each users as user, index}}
+        {{@each users as user, index}}
         <li class="user-item" data-index="{{ index }}">{{ user.name }}</li>
         {{/each}}
     </ul>
@@ -184,7 +184,7 @@ Use `{{#each}}` or `{{@each}}` for list rendering, with index support:
 ```
 
 **Syntax Notes**:
-- List directive: `{{#each array as item, index}}` or `{{@each array as item, index}}`
+- List directive: `{{@each array as item, index}}`
 - Closing tag: `{{/each}}`
 - Index parameter is optional
 
@@ -213,9 +213,9 @@ Supports nesting conditional directives inside other conditional directives:
 
 ```html
 <template>
-    {{#if user.isActive}}
+    {{@if user.isActive}}
     <div class="user-active">
-        {{#if user.hasPermission}}
+        {{@if user.hasPermission}}
         <p>User has permission</p>
         {{:else}}
         <p>User has no permission</p>
@@ -259,11 +259,11 @@ Supports comparison and logical operators:
 
 ```html
 <template>
-    {{#if count > 0 && count < 100}}
+    {{@if count > 0 && count < 100}}
     <p>Count is within range</p>
     {{/if}}
 
-    {{#if user.age >= 18 && user.isVerified}}
+    {{@if user.age >= 18 && user.isVerified}}
     <p>Verified adult user</p>
     {{/if}}
 </template>
@@ -457,8 +457,8 @@ RSX integrates four technology stacks in a single file:
 ### 4. Template Features
 
 - **Text Interpolation**: `{{ variable }}`
-- **Conditional Rendering**: `{{#if}}`, `{{:else if}}`, `{{:else}}`, `{{/if}}`
-- **List Rendering**: `{{#each array as item, index}}` or `{{@each array as item, index}}`
+- **Conditional Rendering**: `{{@if}}`, `{{:else if}}`, `{{:else}}`, `{{/if}}`
+- **List Rendering**: `{{@each array as item, index}}`
 - **Nested Directives**: Supports multi-level nested loops and conditional directives
 - **Expression Syntax**:
   - Property access: `user.profile.name`
@@ -518,14 +518,14 @@ const { users, loading } = defineProps<{
 </script>
 
 <template>
-    <div class="user-container">
-        {{#if loading}}
+    <div class="user">
+        {{@if loading}}
         <p>Loading...</p>
         {{:else}}
         <ul class="user-list">
             {{@each users as user, index}}
             <li class="user-item" data-index="{{ index }}">
-                {{#if user.avatar}}
+                {{@if user.avatar}}
                 <img src="{{ user.avatar }}" alt="{{ user.name }}" />
                 {{/if}}
                 <div>
@@ -540,46 +540,10 @@ const { users, loading } = defineProps<{
 </template>
 
 <style>
-    .user-container {
+    .user {
         max-width: 800px;
         margin: 0 auto;
         padding: 20px;
-    }
-
-    .user-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s;
-
-            &:hover {
-                background-color: #f5f5f5;
-            }
-
-            img {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                margin-right: 15px;
-            }
-
-            h3 {
-                margin: 0 0 5px 0;
-                font-size: 16px;
-            }
-
-            p {
-                margin: 0;
-                color: #666;
-                font-size: 14px;
-            }
-        }
     }
 </style>
 ```
@@ -593,11 +557,11 @@ const { users, loading } = defineProps<{
 | Feature | Syntax Format | Example |
 |---------|---------------|---------|
 | Text Interpolation | `{{ expression }}` | `{{ user.name }}` |
-| Condition Start | `{{#if condition}}` | `{{#if count > 0}}` |
+| Condition Start | `{{@if condition}}` | `{{@if count > 0}}` |
 | Condition Branch | `{{:else if condition}}` | `{{:else if count == 0}}` |
 | Condition Else | `{{:else}}` | `{{:else}}` |
 | Condition End | `{{/if}}` | `{{/if}}` |
-| Loop Start | `{{#each array as item, index}}` or `{{@each array as item, index}}` | `{{#each users as user, i}}` |
+| Loop Start | `{{@each array as item, index}}` | `{{@each users as user, i}}` |
 | Loop End | `{{/each}}` | `{{/each}}` |
 | Raw HTML | `{{@html variable}}` | `{{@html content}}` |
 | Client Component | `<Component client="framework" />` | `<App client="react" />` |
@@ -633,7 +597,7 @@ const { users, loading } = defineProps<{
 #### Conditional List Rendering
 
 ```html
-{{#if items.length > 0}}
+{{@if items.length > 0}}
     {{@each items as item, index}}
     <div>{{ item.name }}</div>
     {{/each}}

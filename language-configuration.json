@@ -34,13 +34,13 @@
   ],
   "folding": {
     "markers": {
-      "start": "^\\s*(---|/\\*|<!--|<(script|template|style)>|\\{\\{#(if|each)|\\{\\{@each)",
+      "start": "^\\s*(---|/\\*|<!--|<(script|template|style)>|\\{\\{@(if|each))",
       "end": "^\\s*(---|\\*/|-->|</(script|template|style)>|\\{\\{/(if|each)\\}\\})"
     }
   },
   "indentationRules": {
-    "increaseIndentPattern": "^\\s*(<(?!\\?|(?:area|base|br|col|frame|hr|html|img|input|link|meta|param)\\b)[a-zA-Z][^/>]*>(?!.*</)|\\{\\{#(if|each)|\\{\\{@each|<(script|template|style)>|\\{[^}]*$|\\([^)]*$|\\[[^\\]]*$)",
-    "decreaseIndentPattern": "^\\s*(</[^>]+>|\\{\\{/(if|each)\\}\\}|\\{\\{:else(\\s+if)?\\}\\}|\\}|\\)|\\])"
+    "increaseIndentPattern": "^\\s*(<(?!\\?|(?:area|base|br|col|frame|hr|html|img|input|link|meta|param)\\b)[a-zA-Z][^/>]*>(?!.*</)|\\{\\{@(if|each)|<(script|template|style)>|\\{[^}]*$|\\([^)]*$|\\[[^\\]]*$)",
+    "decreaseIndentPattern": "^\\s*(</[^>]+>|\\{\\{/(if|each)\\}\\}|\\{\\{:else(\\s+if)?\\}\\}|\\{\\{:elseif|\\}|\\)|\\])"
   },
   "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
   "onEnterRules": [
@@ -50,13 +50,8 @@
       "action": { "indent": "indentOutdent" }
     },
     {
-      "beforeText": "\\{\\{#(if|each)[^}]*\\}\\}\\s*$",
+      "beforeText": "\\{\\{@(if|each)[^}]*\\}\\}\\s*$",
       "afterText": "^\\s*\\{\\{/(if|each)\\}\\}",
-      "action": { "indent": "indentOutdent" }
-    },
-    {
-      "beforeText": "\\{\\{@each[^}]*\\}\\}\\s*$",
-      "afterText": "^\\s*\\{\\{/each\\}\\}",
       "action": { "indent": "indentOutdent" }
     },
     {

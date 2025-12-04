@@ -17,6 +17,32 @@ export type ErrorSeverity = 'error' | 'warning' | 'info'
 export type SectionType = 'rust_section' | 'script_section' | 'template_section' | 'style_section'
 
 /**
+ * 表达式类型
+ */
+export type ExpressionType = 
+    | 'unknown' 
+    | 'conditional' 
+    | 'function_call' 
+    | 'binary_expression' 
+    | 'unary_expression' 
+    | 'property_access' 
+    | 'identifier'
+    | 'string_literal'
+    | 'number_literal'
+    | 'boolean_literal'
+
+/**
+ * 二元运算符类型
+ */
+export type BinaryOperatorType = 
+    | 'logical_or' 
+    | 'logical_and' 
+    | 'equality' 
+    | 'comparison' 
+    | 'additive' 
+    | 'multiplicative'
+
+/**
  * 表示代码中的一个位置点
  */
 export interface Position {
@@ -79,20 +105,35 @@ export interface Directive {
  * 解析后的表达式
  */
 export interface ParsedExpression {
-    type: 'unknown' | 'conditional' | 'function_call' | 'binary_expression' | 'unary_expression' | 'property_access' | 'identifier'
+    type: ExpressionType
     raw: string
     parts?: string[]
+    // 条件表达式
     condition?: string
     trueValue?: string
     falseValue?: string
+    // 函数调用
     function?: string
+    parsedFunction?: ParsedExpression
     arguments?: string[]
+    parsedArguments?: ParsedExpression[]
+    // 二元表达式
     operator?: string
-    operatorType?: string
+    operatorType?: BinaryOperatorType
     left?: string
     right?: string
+    parsedLeft?: ParsedExpression
+    parsedRight?: ParsedExpression
+    // 一元表达式
     operand?: string
+    parsedOperand?: ParsedExpression
+    // 属性访问
+    object?: string
+    property?: string
+    // 标识符
     name?: string
+    // 字面量
+    value?: string | number | boolean
 }
 
 /**
@@ -115,7 +156,7 @@ export interface ConditionBranch {
 }
 
 /**
- * 条件指令 {#if} ... {/if}
+ * 条件指令 {{@if}} ... {{/if}}
  */
 export interface IfDirective extends Directive {
     type: 'if_directive'
@@ -124,7 +165,7 @@ export interface IfDirective extends Directive {
 }
 
 /**
- * 循环指令 {#each} 或 {{@each}}
+ * 循环指令 {{@each array as item, index}} ... {{/each}}
  */
 export interface EachDirective extends Directive {
     type: 'each_directive'
@@ -198,7 +239,16 @@ export interface ParseStatistics {
 }
 
 /**
+ * RSX 解析器
+ * 
  * 解析 RSX 文件，将其分解为 Rust、TypeScript(script)、HTML(template) 和 SCSS(style) 部分。
+ * 
+ * RSX 语法规范:
+ * - 条件渲染: {{@if condition}}...{{:else if condition}}...{{:elseif condition}}...{{:else}}...{{/if}}
+ * - 列表渲染: {{@each array as item, index}}...{{/each}}
+ * - 原始HTML: {{@html content}}
+ * - 文本插值: {{ expression }}
+ * - 客户端组件: <ComponentName client="react|vue|svelte" />
  */
 export default class RSXParser {
     rustParser: Parser
@@ -243,9 +293,50 @@ export default class RSXParser {
     preprocessTemplate(content: string, directives: AnyDirective[]): string
 
     /**
+     * 处理if指令
+     * 语法: {{@if condition}}...{{:else if condition}}...{{:elseif condition}}...{{:else}}...{{/if}}
+     */
+    processIfDirectives(content: string, directives: AnyDirective[]): string
+
+    /**
+     * 递归处理分支内容中的嵌套指令
+     */
+    preprocessBranchContent(content: string, directives: AnyDirective[]): string
+
+    /**
+     * 处理客户端组件
+     */
+    processClientComponents(content: string, directives: AnyDirective[]): string
+
+    /**
      * 解析表达式
      */
     parseExpression(expression: string): ParsedExpression
+
+    /**
+     * 解析三元表达式
+     */
+    parseTernaryExpression(expression: string): ParsedExpression | null
+
+    /**
+     * 解析二元表达式
+     */
+    parseBinaryExpression(expression: string): ParsedExpression | null
+
+    /**
+     * 解析函数调用表达式
+     */
+    parseCallExpression(expression: string): ParsedExpression | null
+
+    /**
+     * 解析参数列表
+     */
+    parseArgumentList(argsString: string): string[]
+
+    /**
+     * 解析HTML属性
+     */
+    parseAttributes(attributeString: string): Record<string, string | boolean>
 
     /**
      * 从Tree-sitter树中提取错误
@@ -256,6 +347,31 @@ export default class RSXParser {
      * 验证RSX文件结构
      */
     validateRSXStructure(parseResult: RSXFile): ParseError[]
+
+    /**
+     * 检查重复的section
+     */
+    checkDuplicateSections(content: string): ParseError[]
+
+    /**
+     * 验证Rust section
+     */
+    validateRustSection(section: ParsedSection): ParseError[]
+
+    /**
+     * 验证Script section
+     */
+    validateScriptSection(section: ParsedSection): ParseError[]
+
+    /**
+     * 验证Template section
+     */
+    validateTemplateSection(section: TemplateSection): ParseError[]
+
+    /**
+     * 验证Style section
+     */
+    validateStyleSection(section: ParsedSection): ParseError[]
 
     /**
      * 格式化错误信息

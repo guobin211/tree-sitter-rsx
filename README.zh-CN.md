@@ -159,7 +159,7 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 ```html
 <template>
-    {{#if porridge.temperature > 100}}
+    {{@if porridge.temperature > 100}}
     <p>too hot!</p>
     {{:else if 80 > porridge.temperature}}
     <p>too cold!</p>
@@ -171,12 +171,12 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 #### 列表渲染
 
-使用`{{#each}}`或`{{@each}}`进行列表渲染，支持索引：
+使用`{{@each}}`进行列表渲染，支持索引：
 
 ```html
 <template>
     <ul class="user-list">
-        {{#each users as user, index}}
+        {{@each users as user, index}}
         <li class="user-item" data-index="{{ index }}">{{ user.name }}</li>
         {{/each}}
     </ul>
@@ -184,7 +184,7 @@ const { users, onUserClick, showAvatar } = defineProps<{
 ```
 
 **语法说明**：
-- 列表指令：`{{#each array as item, index}}` 或 `{{@each array as item, index}}`
+- 列表指令：`{{@each array as item, index}}`
 - 结束标签：`{{/each}}`
 - 索引参数是可选的
 
@@ -213,9 +213,9 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 ```html
 <template>
-    {{#if user.isActive}}
+    {{@if user.isActive}}
     <div class="user-active">
-        {{#if user.hasPermission}}
+        {{@if user.hasPermission}}
         <p>用户有权限</p>
         {{:else}}
         <p>用户无权限</p>
@@ -259,11 +259,11 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 ```html
 <template>
-    {{#if count > 0 && count < 100}}
+    {{@if count > 0 && count < 100}}
     <p>数量在范围内</p>
     {{/if}}
 
-    {{#if user.age >= 18 && user.isVerified}}
+    {{@if user.age >= 18 && user.isVerified}}
     <p>已验证的成年用户</p>
     {{/if}}
 </template>
@@ -457,8 +457,8 @@ RSX将四种技术栈整合在一个文件中：
 ### 4. 模板功能
 
 - **文本插值**：`{{ variable }}`
-- **条件渲染**：`{{#if}}`、`{{:else if}}`、`{{:else}}`、`{{/if}}`
-- **列表渲染**：`{{#each array as item, index}}` 或 `{{@each array as item, index}}`
+- **条件渲染**：`{{@if}}`、`{{:else if}}`、`{{:else}}`、`{{/if}}`
+- **列表渲染**：`{{@each array as item, index}}`
 - **嵌套指令**：支持多层嵌套的循环和条件指令
 - **表达式语法**：
   - 属性访问：`user.profile.name`
@@ -519,13 +519,13 @@ const { users, loading } = defineProps<{
 
 <template>
     <div class="user-container">
-        {{#if loading}}
+        {{@if loading}}
         <p>Loading...</p>
         {{:else}}
         <ul class="user-list">
             {{@each users as user, index}}
             <li class="user-item" data-index="{{ index }}">
-                {{#if user.avatar}}
+                {{@if user.avatar}}
                 <img src="{{ user.avatar }}" alt="{{ user.name }}" />
                 {{/if}}
                 <div>
@@ -593,11 +593,11 @@ const { users, loading } = defineProps<{
 | 功能 | 语法格式 | 示例 |
 |------|----------|------|
 | 文本插值 | `{{ expression }}` | `{{ user.name }}` |
-| 条件开始 | `{{#if condition}}` | `{{#if count > 0}}` |
+| 条件开始 | `{{@if condition}}` | `{{@if count > 0}}` |
 | 条件分支 | `{{:else if condition}}` | `{{:else if count == 0}}` |
 | 条件否分支 | `{{:else}}` | `{{:else}}` |
 | 条件结束 | `{{/if}}` | `{{/if}}` |
-| 循环开始 | `{{#each array as item, index}}` 或 `{{@each array as item, index}}` | `{{#each users as user, i}}` |
+| 循环开始 | `{{@each array as item, index}}` | `{{@each users as user, i}}` |
 | 循环结束 | `{{/each}}` | `{{/each}}` |
 | Raw HTML | `{{@html variable}}` | `{{@html content}}` |
 | 客户端组件 | `<Component client="framework" />` | `<App client="react" />` |
@@ -633,7 +633,7 @@ const { users, loading } = defineProps<{
 #### 条件渲染列表
 
 ```html
-{{#if items.length > 0}}
+{{@if items.length > 0}}
     {{@each items as item, index}}
     <div>{{ item.name }}</div>
     {{/each}}

@@ -19,16 +19,14 @@ module.exports = grammar({
     $.template_text,
   ],
 
-
-
   rules: {
-    source_file: $ => repeat(choice(
-      $.rust_section,
-      $.script_section,
-      $.template_section,
-      $.style_section,
-      $.comment,
-    )),
+    // RSX file structure: each section can appear at most once
+    source_file: $ => seq(
+      optional($.rust_section),
+      optional($.script_section),
+      optional($.template_section),
+      optional($.style_section),
+    ),
 
     // Rust frontmatter section: ---\n...\n---
     rust_section: $ => seq(
@@ -71,10 +69,10 @@ module.exports = grammar({
       $.template_interpolation,
       $.if_directive,
       $.each_directive,
-      $.each_directive_alt,
       $.raw_html_directive,
       $.template_comment,
       $.html_element,
+      $.client_component,
     )),
 
     // HTML element: <tag ...>...</tag> or <tag ... />
@@ -99,7 +97,33 @@ module.exports = grammar({
       ),
     ),
 
-    tag_name: $ => /[a-zA-Z][a-zA-Z0-9_-]*/,
+    // Client component: <Component client="react|vue|svelte" ... />
+    client_component: $ => choice(
+      // Self-closing client component
+      seq(
+        '<',
+        field('component_name', $.component_name),
+        repeat($.html_attribute),
+        '/>',
+      ),
+      // Opening and closing client component
+      seq(
+        '<',
+        field('component_name', $.component_name),
+        repeat($.html_attribute),
+        '>',
+        optional($.template_body),
+        '</',
+        $.component_name,
+        '>',
+      ),
+    ),
+
+    // Component name starts with uppercase (PascalCase)
+    component_name: $ => /[A-Z][a-zA-Z0-9_]*/,
+
+    // HTML tag name starts with lowercase
+    tag_name: $ => /[a-z][a-zA-Z0-9_-]*/,
 
     // HTML attribute: name="value" or name={{value}} or name
     html_attribute: $ => seq(
@@ -137,9 +161,9 @@ module.exports = grammar({
       '}}',
     ),
 
-    // If directive: {{#if condition}}...{{:else}}...{{/if}}
+    // If directive: {{@if condition}}...{{:else if}}...{{:else}}...{{/if}}
     if_directive: $ => seq(
-      '{{#if',
+      '{{@if',
       field('condition', $._expression),
       '}}',
       field('consequence', optional($.template_body)),
@@ -148,9 +172,9 @@ module.exports = grammar({
       '{{/if}}',
     ),
 
+    // else if clause: {{:else if condition}}
     else_if_clause: $ => seq(
-      '{{:else',
-      'if',
+      choice('{{:else if', '{{:elseif'),
       field('condition', $._expression),
       '}}',
       field('body', optional($.template_body)),
@@ -161,20 +185,8 @@ module.exports = grammar({
       field('body', optional($.template_body)),
     ),
 
-    // Each directive: {{#each array as item, index}}...{{/each}}
+    // Each directive: {{@each array as item, index}}...{{/each}}
     each_directive: $ => seq(
-      '{{#each',
-      field('iterable', $._expression),
-      'as',
-      field('item', $.identifier),
-      optional(seq(',', field('index', $.identifier))),
-      '}}',
-      field('body', optional($.template_body)),
-      '{{/each}}',
-    ),
-
-    // Alternative each directive: {{@each array as item, index}}...{{/each}}
-    each_directive_alt: $ => seq(
       '{{@each',
       field('iterable', $._expression),
       'as',
@@ -200,18 +212,26 @@ module.exports = grammar({
       $.binary_expression,
       $.unary_expression,
       $.conditional_expression,
+      $.parenthesized_expression,
       $.string_literal,
       $.number_literal,
       $.boolean_literal,
+    ),
+
+    // Parenthesized expression: (expression)
+    parenthesized_expression: $ => seq(
+      '(',
+      $._expression,
+      ')',
     ),
 
     // Binary expression: left op right
     binary_expression: $ => prec.left(1, seq(
       field('left', $._expression),
       field('operator', choice(
-        '>', '<', '>=', '<=', '==', '!=',
+        '>', '<', '>=', '<=', '==', '!=', '===', '!==',
         '&&', '||',
-        '+', '-', '*', '/',
+        '+', '-', '*', '/', '%',
       )),
       field('right', $._expression),
     )),
@@ -278,11 +298,5 @@ module.exports = grammar({
 
     // Boolean literal
     boolean_literal: $ => choice('true', 'false'),
-
-    // Comments
-    comment: $ => choice(
-      seq('//', /.*/),
-      seq('/*', /[^*]*\*+([^/*][^*]*\*+)*/, '/'),
-    ),
   },
 });

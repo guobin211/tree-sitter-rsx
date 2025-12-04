@@ -20,10 +20,10 @@ const SUPPORTED_CLIENT_TYPES = ['react', 'vue', 'svelte']
 const BINARY_OPERATORS = [
     { ops: ['||'], name: 'logical_or' },
     { ops: ['&&'], name: 'logical_and' },
-    { ops: ['==', '!='], name: 'equality' },
+    { ops: ['===', '!==', '==', '!='], name: 'equality' },
     { ops: ['>=', '<=', '>', '<'], name: 'comparison' },
     { ops: ['+', '-'], name: 'additive' },
-    { ops: ['*', '/'], name: 'multiplicative' }
+    { ops: ['*', '/', '%'], name: 'multiplicative' }
 ]
 
 class RSXParser {
@@ -369,24 +369,6 @@ class RSXParser {
                 }
             )
 
-            // 处理循环指令 {{#each array as item, index}}
-            processedContent = processedContent.replace(
-                /\{\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
-                (match, array, item, index, body, offset) => {
-                    directives.push({
-                        type: 'each_directive',
-                        array: array,
-                        item: item,
-                        index: index || null,
-                        body: body ? body.trim() : '',
-                        start: offset,
-                        end: offset + match.length,
-                        original: match
-                    })
-                    return `<!-- EACH_DIRECTIVE_${directives.length - 1} -->`
-                }
-            )
-
             // 处理Raw HTML指令 {{@html content}}
             processedContent = processedContent.replace(/\{\{@html\s+([\w.]+)\}\}/g, (match, content, offset) => {
                 directives.push({
@@ -405,8 +387,8 @@ class RSXParser {
         }
 
         // 最后处理文本插值 {{ expression }}（必须在结构化指令之后）
-        // 排除指令标记: {{#...}}, {{/...}}, {{:...}}, {{@...}}
-        processedContent = processedContent.replace(/\{\{\s*([^}#@/:][^}]*?)\s*\}\}/g, (match, expression, offset) => {
+        // 排除指令标记: {{/...}}, {{:...}}, {{@...}}
+        processedContent = processedContent.replace(/\{\{\s*([^}@/:][^}]*?)\s*\}\}/g, (match, expression, offset) => {
             const trimmedExpr = expression.trim()
             // 跳过空表达式
             if (!trimmedExpr) {
@@ -432,6 +414,7 @@ class RSXParser {
 
     /**
      * 处理复杂的if指令，支持多个else if分支
+     * 语法: {{@if condition}}...{{:else if condition}}...{{:else}}...{{/if}}
      * @param {string} content - 模板内容
      * @param {Array} directives - 指令数组
      * @returns {string} 处理后的内容
@@ -440,17 +423,18 @@ class RSXParser {
         let processedContent = content
         let offset = 0
 
-        // 找到所有if指令的开始和结束位置（双大括号语法）
+        // 找到所有if指令的开始和结束位置（{{@if}} 语法）
         const findMatchingDirectives = (text) => {
             const stack = []
             const matches = []
             let index = 0
 
             while (index < text.length) {
-                // 匹配 {{#if condition}}
-                const ifMatch = text.slice(index).match(/^\{\{#if\s+([^}]+)\}\}/)
-                // 匹配 {{:else}} 或 {{:else if condition}}
+                // 匹配 {{@if condition}}
+                const ifMatch = text.slice(index).match(/^\{\{@if\s+([^}]+)\}\}/)
+                // 匹配 {{:else}} 或 {{:else if condition}} 或 {{:elseif condition}}
                 const elseMatch = text.slice(index).match(/^\{\{:else(?:\s+if\s+([^}]+))?\}\}/)
+                const elseifMatch = text.slice(index).match(/^\{\{:elseif\s+([^}]+)\}\}/)
                 // 匹配 {{/if}}
                 const endIfMatch = text.slice(index).match(/^\{\{\/if\}\}/)
 
@@ -462,18 +446,29 @@ class RSXParser {
                         startLength: ifMatch[0].length
                     })
                     index += ifMatch[0].length
-                } else if (elseMatch && stack.length > 0) {
+                } else if ((elseMatch || elseifMatch) && stack.length > 0) {
                     const current = stack[stack.length - 1]
                     if (!current.branches) {
                         current.branches = []
                     }
-                    current.branches.push({
-                        type: elseMatch[1] ? 'else_if' : 'else',
-                        condition: elseMatch[1] ? elseMatch[1].trim() : null,
-                        start: index,
-                        length: elseMatch[0].length
-                    })
-                    index += elseMatch[0].length
+                    
+                    if (elseifMatch) {
+                        current.branches.push({
+                            type: 'else_if',
+                            condition: elseifMatch[1].trim(),
+                            start: index,
+                            length: elseifMatch[0].length
+                        })
+                        index += elseifMatch[0].length
+                    } else if (elseMatch) {
+                        current.branches.push({
+                            type: elseMatch[1] ? 'else_if' : 'else',
+                            condition: elseMatch[1] ? elseMatch[1].trim() : null,
+                            start: index,
+                            length: elseMatch[0].length
+                        })
+                        index += elseMatch[0].length
+                    }
                 } else if (endIfMatch && stack.length > 0) {
                     const directive = stack.pop()
                     directive.end = index
@@ -641,24 +636,6 @@ class RSXParser {
             }
         )
 
-        // 处理循环指令 {{#each}}
-        processedContent = processedContent.replace(
-            /\{\{#each\s+([\w.]+)\s+as\s+(\w+)(?:,\s*(\w+))?\}\}([\s\S]*?)\{\{\/each\}\}/g,
-            (match, array, item, index, body, offset) => {
-                directives.push({
-                    type: 'each_directive',
-                    array: array,
-                    item: item,
-                    index: index || null,
-                    body: body ? body.trim() : '',
-                    start: offset,
-                    end: offset + match.length,
-                    original: match
-                })
-                return `<!-- EACH_DIRECTIVE_${directives.length - 1} -->`
-            }
-        )
-
         // 处理嵌套的if指令
         processedContent = this.processIfDirectives(processedContent, directives)
 
@@ -675,7 +652,7 @@ class RSXParser {
         })
 
         // 处理文本插值（排除指令标记）
-        processedContent = processedContent.replace(/\{\{\s*([^}#@/:][^}]*?)\s*\}\}/g, (match, expression, offset) => {
+        processedContent = processedContent.replace(/\{\{\s*([^}@/:][^}]*?)\s*\}\}/g, (match, expression, offset) => {
             const trimmedExpr = expression.trim()
             if (!trimmedExpr) {
                 return match
