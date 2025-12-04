@@ -1,0 +1,34 @@
+{
+  "grammars": [
+    {
+      "name": "rsx",
+      "camelcase": "RSX",
+      "scope": "source.rsx",
+      "path": ".",
+      "file-types": ["rsx"],
+      "injection-regex": "^rsx$",
+      "highlights": "queries/highlights.scm",
+      "injections": "queries/injections.scm",
+      "locals": "queries/locals.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.6",
+    "license": "MIT",
+    "description": "RSX grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "michael",
+        "email": "michaelbguo@tencent.com"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/guobin211/tree-sitter-rsx"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "rust": true,
+    "node": true
+  }
+}

@@ -1,15 +1,15 @@
 {
     "name": "tree-sitter-rsx",
-    "version": "0.1.5",
-    "description": "The rsx language",
+    "version": "0.1.6",
+    "description": "Tree-sitter grammar for RSX language",
     "repository": "https://github.com/guobin211/tree-sitter-rsx",
     "license": "MIT",
     "author": {
         "name": "michael",
         "email": "michaelbguo@tencent.com"
     },
-    "main": "./src/rsx-parser.js",
-    "types": "./src/rsx-parser.d.ts",
+    "main": "bindings/node",
+    "types": "bindings/node",
     "keywords": [
         "incremental",
         "parsing",
@@ -17,9 +17,23 @@
         "rsx"
     ],
     "files": [
+        "grammar.js",
+        "binding.gyp",
+        "prebuilds/**",
+        "bindings/node/*",
+        "queries/*",
         "src/**",
-        "syntaxes/**",
-        "language-configuration.json"
+        "*.wasm"
+    ],
+    "tree-sitter": [
+        {
+            "scope": "source.rsx",
+            "file-types": ["rsx"],
+            "injection-regex": "^rsx$",
+            "highlights": "queries/highlights.scm",
+            "injections": "queries/injections.scm",
+            "locals": "queries/locals.scm"
+        }
     ],
     "contributes": {
         "languages": [
@@ -34,33 +48,31 @@
             {
                 "language": "rsx",
                 "scopeName": "source.rsx",
-                "path": "./syntaxes/rsx.tmLanguage.json",
+                "path": "./rsx.tmLanguage.json",
                 "embeddedLanguages": {
                     "meta.section.rust.rsx": "rust",
                     "meta.section.script.rsx": "typescript",
                     "meta.section.style.rsx": "scss"
                 }
             }
-        ],
-        "snippets": [
-            {
-                "language": "rsx",
-                "path": "./syntaxes/rsx.snippets.json"
-            }
         ]
     },
-    "dependencies": {
-        "tree-sitter": "^0.21.1",
-        "tree-sitter-html": "^0.23.2",
-        "tree-sitter-rust": "^0.21.0",
-        "tree-sitter-scss": "^1.0.0",
-        "tree-sitter-typescript": "^0.21.2"
-    },
     "devDependencies": {
-        "@types/node": "^22.19.1"
+        "@types/node": "^22.19.1",
+        "tree-sitter-cli": "^0.24.0"
     },
     "scripts": {
-        "dev": "tree-sitter generate && tree-sitter build --wasm",
-        "test": "node --test example/test-parser.js"
+        "build": "tree-sitter generate",
+        "build-wasm": "tree-sitter build --wasm",
+        "test": "tree-sitter test",
+        "parse": "tree-sitter parse"
+    },
+    "peerDependencies": {
+        "tree-sitter": "^0.21.0"
+    },
+    "peerDependenciesMeta": {
+        "tree-sitter": {
+            "optional": true
+        }
     }
 }
