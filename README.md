@@ -1,68 +1,70 @@
-# RSX 语言规范
+# RSX Language Specification
 
-RSX是一个全栈Web框架，结合了Rust的服务端性能、TypeScript的类型安全、Handlebars的模板语法和SCSS的样式能力。
+[中文文档](./README.zh-CN.md)
 
-## 目录
+RSX is a full-stack web framework that combines Rust's server-side performance, TypeScript's type safety, Handlebars template syntax, and SCSS styling capabilities.
 
-- [文件结构](#文件结构)
-- [基本语法规则](#基本语法规则)
-- [Rust部分](#rust部分)
-- [TypeScript部分](#typescript部分)
-- [Template部分](#template部分)
-- [Style部分](#style部分)
-- [核心特性总结](#核心特性总结)
+## Table of Contents
+
+- [File Structure](#file-structure)
+- [Basic Syntax Rules](#basic-syntax-rules)
+- [Rust Section](#rust-section)
+- [TypeScript Section](#typescript-section)
+- [Template Section](#template-section)
+- [Style Section](#style-section)
+- [Core Features Summary](#core-features-summary)
 
 ---
 
-## 文件结构
+## File Structure
 
-RSX文件使用`.rsx`扩展名，包含四个主要部分：
+RSX files use the `.rsx` extension and contain four main sections:
 
 ```rsx
 ---
-// Rust部分：服务端逻辑
+// Rust section: server-side logic
 ---
 
 <script>
-// JavaScript/TypeScript部分
+// JavaScript/TypeScript section
 </script>
 
 <template>
-<!-- Template部分：handlebars模板 -->
+<!-- Template section: handlebars templates -->
 </template>
 
 <style>
-/* Style部分：SCSS样式 */
+/* Style section: SCSS styles */
 </style>
 ```
 
 ---
 
-## 基本语法规则
+## Basic Syntax Rules
 
-- 使用4个空格缩进
-- 使用UTF-8编码
-- 使用Unix风格换行符(LF)
+- Use 4 spaces for indentation
+- Use UTF-8 encoding
+- Use Unix-style line endings (LF)
 
 ---
 
-## Rust部分
+## Rust Section
 
-### 语法规则
+### Syntax Rules
 
-- 以`---`开头和结尾
-- 使用Rust语言编写服务端逻辑
+- Starts and ends with `---`
+- Uses Rust language for server-side logic
 
-### 服务端数据获取
+### Server-Side Data Fetching
 
-#### 基本格式
+#### Basic Format
 
-通过`get_server_side_props`函数在服务端获取数据，支持异步操作：
+Fetch data on the server using the `get_server_side_props` function, with async support:
 
 ```rust
 ---
 async fn get_server_side_props(req: Request) -> Response {
-    // 服务端逻辑
+    // Server-side logic
     let data = fetch_data().await;
     Response::json!({
         "data": data,
@@ -71,14 +73,14 @@ async fn get_server_side_props(req: Request) -> Response {
 ---
 ```
 
-#### 带上下文的格式
+#### Format with Context
 
-支持请求上下文(`Request`)和运行时上下文(`Context`)：
+Supports request context (`Request`) and runtime context (`Context`):
 
 ```rust
 ---
 async fn get_server_side_props(req: Request, ctx: Context) -> Response {
-    // 使用上下文信息
+    // Use context information
     let user_id = ctx.get_user_id();
     let data = fetch_user_data(user_id).await;
     Response::json!({
@@ -90,18 +92,18 @@ async fn get_server_side_props(req: Request, ctx: Context) -> Response {
 
 ---
 
-## TypeScript部分
+## TypeScript Section
 
-### 语法规则
+### Syntax Rules
 
-- 以`<script>`开头，以`</script>`结尾
-- 使用TypeScript编写客户端逻辑
+- Starts with `<script>` and ends with `</script>`
+- Uses TypeScript for client-side logic
 
-### 组件属性定义
+### Component Props Definition
 
-#### 基本属性
+#### Basic Props
 
-使用`defineProps`定义组件属性类型：
+Use `defineProps` to define component property types:
 
 ```typescript
 <script>
@@ -113,9 +115,9 @@ const { data, loading, error } = defineProps<{
 </script>
 ```
 
-#### 复杂属性
+#### Complex Props
 
-支持接口定义和复杂类型：
+Supports interface definitions and complex types:
 
 ```typescript
 <script>
@@ -136,13 +138,13 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 ---
 
-## Template部分
+## Template Section
 
-### 基本语法
+### Basic Syntax
 
-#### 文本插值
+#### Text Interpolation
 
-使用双大括号进行文本插值：
+Use double curly braces for text interpolation:
 
 ```html
 <template>
@@ -151,9 +153,9 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
-#### 条件渲染
+#### Conditional Rendering
 
-支持`if`、`else if`、`else`条件渲染：
+Supports `if`, `else if`, `else` conditional rendering:
 
 ```html
 <template>
@@ -167,9 +169,9 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
-#### 列表渲染
+#### List Rendering
 
-使用`{{#each}}`或`{{@each}}`进行列表渲染，支持索引：
+Use `{{#each}}` or `{{@each}}` for list rendering, with index support:
 
 ```html
 <template>
@@ -181,14 +183,14 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
-**语法说明**：
-- 列表指令：`{{#each array as item, index}}` 或 `{{@each array as item, index}}`
-- 结束标签：`{{/each}}`
-- 索引参数是可选的
+**Syntax Notes**:
+- List directive: `{{#each array as item, index}}` or `{{@each array as item, index}}`
+- Closing tag: `{{/each}}`
+- Index parameter is optional
 
-#### 嵌套循环
+#### Nested Loops
 
-支持多层嵌套的循环：
+Supports multi-level nested loops:
 
 ```html
 <template>
@@ -205,33 +207,33 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
-#### 嵌套条件指令
+#### Nested Conditional Directives
 
-支持在条件指令内部嵌套其他条件指令：
+Supports nesting conditional directives inside other conditional directives:
 
 ```html
 <template>
     {{#if user.isActive}}
     <div class="user-active">
         {{#if user.hasPermission}}
-        <p>用户有权限</p>
+        <p>User has permission</p>
         {{:else}}
-        <p>用户无权限</p>
+        <p>User has no permission</p>
         {{/if}}
     </div>
     {{:else}}
-    <p>用户未激活</p>
+    <p>User is not active</p>
     {{/if}}
 </template>
 ```
 
-### 表达式语法
+### Expression Syntax
 
-模板中支持多种表达式类型，可以在文本插值、HTML属性、条件判断等场景使用：
+Templates support various expression types for text interpolation, HTML attributes, conditional checks, etc.:
 
-#### 属性访问
+#### Property Access
 
-使用点号访问对象属性：
+Use dot notation to access object properties:
 
 ```html
 <template>
@@ -240,80 +242,80 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
-#### 函数调用
+#### Function Calls
 
-支持调用函数并传递参数：
+Supports calling functions with arguments:
 
 ```html
 <template>
-    <p>价格：{{ formatPrice(item.price) }}</p>
-    <p>日期：{{ formatDate(user.createdAt, 'YYYY-MM-DD') }}</p>
+    <p>Price: {{ formatPrice(item.price) }}</p>
+    <p>Date: {{ formatDate(user.createdAt, 'YYYY-MM-DD') }}</p>
 </template>
 ```
 
-#### 二元表达式
+#### Binary Expressions
 
-支持比较和逻辑运算符：
+Supports comparison and logical operators:
 
 ```html
 <template>
     {{#if count > 0 && count < 100}}
-    <p>数量在范围内</p>
+    <p>Count is within range</p>
     {{/if}}
 
     {{#if user.age >= 18 && user.isVerified}}
-    <p>已验证的成年用户</p>
+    <p>Verified adult user</p>
     {{/if}}
 </template>
 ```
 
-支持的运算符：
-- 比较运算符：`>`, `<`, `>=`, `<=`, `==`, `!=`
-- 逻辑运算符：`&&`, `||`
-- 算术运算符：`+`, `-`, `*`, `/`
+Supported operators:
+- Comparison operators: `>`, `<`, `>=`, `<=`, `==`, `!=`
+- Logical operators: `&&`, `||`
+- Arithmetic operators: `+`, `-`, `*`, `/`
 
-#### 条件表达式（三元运算符）
+#### Conditional Expressions (Ternary Operator)
 
-使用三元运算符进行条件判断：
+Use ternary operator for conditional evaluation:
 
 ```html
 <template>
-    <p>{{ isActive ? '激活' : '未激活' }}</p>
-    <p>{{ count > 0 ? count : '无' }}</p>
+    <p>{{ isActive ? 'Active' : 'Inactive' }}</p>
+    <p>{{ count > 0 ? count : 'None' }}</p>
 </template>
 ```
 
-### HTML属性中的表达式
+### Expressions in HTML Attributes
 
-可以在任何HTML属性中使用表达式：
+You can use expressions in any HTML attribute:
 
 ```html
 <template>
-    <!-- class属性 -->
+    <!-- class attribute -->
     <div class="{{ isActive ? 'active' : 'inactive' }}">
         <span class="status-{{ status }}">{{ status }}</span>
     </div>
 
-    <!-- id属性 -->
+    <!-- id attribute -->
     <div id="user-{{ user.id }}"></div>
 
-    <!-- data属性 -->
+    <!-- data attributes -->
     <div data-index="{{ index }}" data-count="{{ items.length }}"></div>
 
-    <!-- src属性 -->
+    <!-- src attribute -->
     <img src="{{ user.avatar || '/default-avatar.png' }}" alt="{{ user.name }}" />
 
-    <!-- href属性 -->
-    <a href="/users/{{ user.id }}">查看用户</a>
+    <!-- href attribute -->
+    <a href="/users/{{ user.id }}">View User</a>
 
-    <!-- style属性 -->
+    <!-- style attribute -->
     <div style="width: {{ width }}px; height: {{ height }}px;"></div>
 </template>
 ```
 
-### 样式绑定
+### Style Binding
 
-支持动态class绑定和条件表达式：
+Supports dynamic class binding and conditional expressions:
 
 ```html
 <template>
@@ -323,9 +325,9 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
-### Raw HTML输出
+### Raw HTML Output
 
-使用`{{@html}}`指令输出原始HTML内容：
+Use `{{@html}}` directive to output raw HTML content:
 
 ```html
 <template>
@@ -333,20 +335,20 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
-### 客户端组件
+### Client Components
 
-支持在模板中使用React、Vue、Svelte等客户端框架组件：
+Supports using React, Vue, Svelte and other client-side framework components in templates:
 
-#### 使用方式
+#### Usage
 
-- 使用`client`属性指定组件的类型
-- 使用`client="react"`指定React组件
-- 使用`client="vue"`指定Vue组件
-- 使用`client="svelte"`指定Svelte组件
+- Use the `client` attribute to specify the component type
+- Use `client="react"` for React components
+- Use `client="vue"` for Vue components
+- Use `client="svelte"` for Svelte components
 
-#### 属性传递
+#### Passing Props
 
-客户端组件的属性可以通过双大括号语法传递，支持表达式：
+Client component props can be passed using double curly brace syntax, with expression support:
 
 ```html
 <script>
@@ -357,10 +359,10 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 <template>
     <div>
-        <!-- 传递简单属性 -->
+        <!-- Passing simple props -->
         <SvelteApp client="svelte" users="{{users}}"></SvelteApp>
 
-        <!-- 传递多个属性 -->
+        <!-- Passing multiple props -->
         <ReactApp
             client="react"
             users="{{users}}"
@@ -368,14 +370,14 @@ const { users, onUserClick, showAvatar } = defineProps<{
             isActive="{{currentUser.isActive}}">
         </ReactApp>
 
-        <!-- 传递复杂属性（对象、数组） -->
+        <!-- Passing complex props (objects, arrays) -->
         <VueApp
             client="vue"
             config="{{appConfig}}"
             items="{{category.items}}">
         </VueApp>
 
-        <!-- 传递函数属性 -->
+        <!-- Passing function props -->
         <ReactApp
             client="react"
             onUserClick="{{handleUserClick}}"
@@ -385,9 +387,9 @@ const { users, onUserClick, showAvatar } = defineProps<{
 </template>
 ```
 
-#### 自闭合标签
+#### Self-Closing Tags
 
-客户端组件支持自闭合标签语法：
+Client components support self-closing tag syntax:
 
 ```html
 <template>
@@ -398,14 +400,14 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 ---
 
-## Style部分
+## Style Section
 
-### 语法规则
+### Syntax Rules
 
-- 以`<style>`开头，以`</style>`结尾
-- 使用SCSS编写样式
+- Starts with `<style>` and ends with `</style>`
+- Uses SCSS for styling
 
-### 示例
+### Example
 
 ```scss
 <style>
@@ -428,63 +430,63 @@ const { users, onUserClick, showAvatar } = defineProps<{
 
 ---
 
-## 核心特性总结
+## Core Features Summary
 
-### 1. 多语言混合架构
+### 1. Multi-Language Hybrid Architecture
 
-RSX将四种技术栈整合在一个文件中：
+RSX integrates four technology stacks in a single file:
 
-- **Rust部分**：服务端逻辑，使用`---`分隔符包裹
-- **TypeScript部分**：客户端逻辑，使用`<script>`标签
-- **Handlebars模板**：视图层，使用`<template>`标签
-- **SCSS样式**：样式层，使用`<style>`标签
+- **Rust Section**: Server-side logic, wrapped with `---` delimiters
+- **TypeScript Section**: Client-side logic, using `<script>` tags
+- **Handlebars Templates**: View layer, using `<template>` tags
+- **SCSS Styles**: Style layer, using `<style>` tags
 
-### 2. 服务端渲染(SSR)支持
+### 2. Server-Side Rendering (SSR) Support
 
-- 通过`get_server_side_props`函数在服务端获取数据
-- 支持异步数据获取
-- 支持请求上下文(`Request`)和运行时上下文(`Context`)
-- 返回JSON格式的响应数据
+- Fetch data on server via `get_server_side_props` function
+- Supports async data fetching
+- Supports request context (`Request`) and runtime context (`Context`)
+- Returns JSON format response data
 
-### 3. 类型安全
+### 3. Type Safety
 
-- TypeScript提供客户端类型检查
-- 使用`defineProps`定义组件属性类型
-- 支持接口定义和复杂类型
+- TypeScript provides client-side type checking
+- Use `defineProps` to define component property types
+- Supports interface definitions and complex types
 
-### 4. 模板功能
+### 4. Template Features
 
-- **文本插值**：`{{ variable }}`
-- **条件渲染**：`{{#if}}`、`{{:else if}}`、`{{:else}}`、`{{/if}}`
-- **列表渲染**：`{{#each array as item, index}}` 或 `{{@each array as item, index}}`
-- **嵌套指令**：支持多层嵌套的循环和条件指令
-- **表达式语法**：
-  - 属性访问：`user.profile.name`
-  - 函数调用：`formatPrice(item.price)`
-  - 二元表达式：`count > 0 && count < 100`
-  - 条件表达式：`isActive ? 'active' : 'inactive'`
-- **HTML属性表达式**：支持在任何HTML属性中使用表达式
-- **样式绑定**：支持动态class绑定
-- **Raw HTML**：`{{@html content}}`支持原始HTML输出
+- **Text Interpolation**: `{{ variable }}`
+- **Conditional Rendering**: `{{#if}}`, `{{:else if}}`, `{{:else}}`, `{{/if}}`
+- **List Rendering**: `{{#each array as item, index}}` or `{{@each array as item, index}}`
+- **Nested Directives**: Supports multi-level nested loops and conditional directives
+- **Expression Syntax**:
+  - Property access: `user.profile.name`
+  - Function calls: `formatPrice(item.price)`
+  - Binary expressions: `count > 0 && count < 100`
+  - Conditional expressions: `isActive ? 'active' : 'inactive'`
+- **HTML Attribute Expressions**: Supports expressions in any HTML attribute
+- **Style Binding**: Supports dynamic class binding
+- **Raw HTML**: `{{@html content}}` for raw HTML output
 
-### 5. 多框架客户端组件支持
+### 5. Multi-Framework Client Component Support
 
-- 支持React组件：`client="react"`
-- 支持Vue组件：`client="vue"`
-- 支持Svelte组件：`client="svelte"`
-- 允许在同一个模板中混合使用不同框架的组件
+- React components: `client="react"`
+- Vue components: `client="vue"`
+- Svelte components: `client="svelte"`
+- Allows mixing components from different frameworks in the same template
 
-### 6. 代码规范
+### 6. Code Standards
 
-- 统一使用4个空格缩进
-- UTF-8编码
-- Unix风格换行符(LF)
+- Consistent 4-space indentation
+- UTF-8 encoding
+- Unix-style line endings (LF)
 
 ---
 
-## 完整示例
+## Complete Example
 
-以下是一个完整的RSX文件示例，展示了所有部分的协同工作：
+Here's a complete RSX file example showing all sections working together:
 
 ```rsx
 ---
@@ -584,51 +586,51 @@ const { users, loading } = defineProps<{
 
 ---
 
-## 语法快速参考
+## Quick Reference
 
-### 模板指令语法对比表
+### Template Directive Syntax Comparison
 
-| 功能 | 语法格式 | 示例 |
-|------|----------|------|
-| 文本插值 | `{{ expression }}` | `{{ user.name }}` |
-| 条件开始 | `{{#if condition}}` | `{{#if count > 0}}` |
-| 条件分支 | `{{:else if condition}}` | `{{:else if count == 0}}` |
-| 条件否分支 | `{{:else}}` | `{{:else}}` |
-| 条件结束 | `{{/if}}` | `{{/if}}` |
-| 循环开始 | `{{#each array as item, index}}` 或 `{{@each array as item, index}}` | `{{#each users as user, i}}` |
-| 循环结束 | `{{/each}}` | `{{/each}}` |
+| Feature | Syntax Format | Example |
+|---------|---------------|---------|
+| Text Interpolation | `{{ expression }}` | `{{ user.name }}` |
+| Condition Start | `{{#if condition}}` | `{{#if count > 0}}` |
+| Condition Branch | `{{:else if condition}}` | `{{:else if count == 0}}` |
+| Condition Else | `{{:else}}` | `{{:else}}` |
+| Condition End | `{{/if}}` | `{{/if}}` |
+| Loop Start | `{{#each array as item, index}}` or `{{@each array as item, index}}` | `{{#each users as user, i}}` |
+| Loop End | `{{/each}}` | `{{/each}}` |
 | Raw HTML | `{{@html variable}}` | `{{@html content}}` |
-| 客户端组件 | `<Component client="framework" />` | `<App client="react" />` |
+| Client Component | `<Component client="framework" />` | `<App client="react" />` |
 
-### 表达式类型
+### Expression Types
 
-| 类型 | 语法 | 示例 |
-|------|------|------|
-| 属性访问 | `object.property.subproperty` | `user.profile.name` |
-| 函数调用 | `function(arg1, arg2)` | `formatPrice(item.price)` |
-| 二元表达式 | `left operator right` | `count > 0 && count < 100` |
-| 三元表达式 | `condition ? true_value : false_value` | `isActive ? 'active' : 'inactive'` |
+| Type | Syntax | Example |
+|------|--------|---------|
+| Property Access | `object.property.subproperty` | `user.profile.name` |
+| Function Call | `function(arg1, arg2)` | `formatPrice(item.price)` |
+| Binary Expression | `left operator right` | `count > 0 && count < 100` |
+| Ternary Expression | `condition ? true_value : false_value` | `isActive ? 'active' : 'inactive'` |
 
-### 支持的运算符
+### Supported Operators
 
-| 类型 | 运算符 |
-|------|--------|
-| 比较运算符 | `>`, `<`, `>=`, `<=`, `==`, `!=` |
-| 逻辑运算符 | `&&`, `||` |
-| 算术运算符 | `+`, `-`, `*`, `/` |
-| 一元运算符 | `!`, `-` |
+| Type | Operators |
+|------|-----------|
+| Comparison | `>`, `<`, `>=`, `<=`, `==`, `!=` |
+| Logical | `&&`, `||` |
+| Arithmetic | `+`, `-`, `*`, `/` |
+| Unary | `!`, `-` |
 
-### 客户端框架支持
+### Client Framework Support
 
-| 框架 | client属性值 | 示例 |
-|------|-------------|------|
+| Framework | client Attribute | Example |
+|-----------|-----------------|---------|
 | React | `client="react"` | `<ReactApp client="react" data="{{data}}" />` |
 | Vue | `client="vue"` | `<VueChart client="vue" config="{{config}}" />` |
 | Svelte | `client="svelte"` | `<SvelteWidget client="svelte" items="{{items}}" />` |
 
-### 常见模式示例
+### Common Patterns
 
-#### 条件渲染列表
+#### Conditional List Rendering
 
 ```html
 {{#if items.length > 0}}
@@ -636,11 +638,11 @@ const { users, loading } = defineProps<{
     <div>{{ item.name }}</div>
     {{/each}}
 {{:else}}
-    <p>暂无数据</p>
+    <p>No data available</p>
 {{/if}}
 ```
 
-#### 嵌套循环
+#### Nested Loops
 
 ```html
 {{@each categories as category}}
@@ -651,7 +653,7 @@ const { users, loading } = defineProps<{
 {{/each}}
 ```
 
-#### 动态样式
+#### Dynamic Styles
 
 ```html
 <div class="{{ isActive ? 'active' : 'inactive' }}">
@@ -659,7 +661,7 @@ const { users, loading } = defineProps<{
 </div>
 ```
 
-#### 客户端组件集成
+#### Client Component Integration
 
 ```html
 <script>
