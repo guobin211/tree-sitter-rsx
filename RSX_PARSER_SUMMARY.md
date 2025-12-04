@@ -98,9 +98,6 @@ tree-sitter-rsx/
 │   ├── node-types.json   # 节点类型定义
 │   ├── rsx-parser.js     # 解析器实现
 │   └── rsx-parser.d.ts   # TypeScript 类型定义
-├── syntaxes/
-│   ├── rsx.tmLanguage.json  # TextMate 语法高亮
-│   └── rsx.snippets.json    # 代码片段
 ├── example/
 │   ├── sample.rsx        # 示例文件
 │   └── test-parser.js    # 测试脚本

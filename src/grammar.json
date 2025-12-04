@@ -972,17 +972,8 @@
             "type": "FIELD",
             "name": "object",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "identifier"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "property_access"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "_callable"
             }
           },
           {
@@ -1001,8 +992,8 @@
       }
     },
     "function_call": {
-      "type": "PREC",
-      "value": 2,
+      "type": "PREC_LEFT",
+      "value": 3,
       "content": {
         "type": "SEQ",
         "members": [
@@ -1010,17 +1001,8 @@
             "type": "FIELD",
             "name": "function",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "identifier"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "property_access"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "_callable"
             }
           },
           {
@@ -1049,6 +1031,23 @@
           }
         ]
       }
+    },
+    "_callable": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "property_access"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "function_call"
+        }
+      ]
     },
     "argument_list": {
       "type": "SEQ",
@@ -1235,12 +1234,7 @@
       "value": "\\s"
     }
   ],
-  "conflicts": [
-    [
-      "property_access",
-      "function_call"
-    ]
-  ],
+  "conflicts": [],
   "precedences": [],
   "externals": [
     {
@@ -1261,6 +1255,5 @@
     }
   ],
   "inline": [],
-  "supertypes": [],
-  "reserved": {}
+  "supertypes": []
 }

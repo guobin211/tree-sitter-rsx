@@ -19,9 +19,7 @@ module.exports = grammar({
     $.template_text,
   ],
 
-  conflicts: $ => [
-    [$.property_access, $.function_call],
-  ],
+
 
   rules: {
     source_file: $ => repeat(choice(
@@ -226,18 +224,24 @@ module.exports = grammar({
 
     // Property access: obj.prop.subprop
     property_access: $ => prec.left(2, seq(
-      field('object', choice($.identifier, $.property_access)),
+      field('object', $._callable),
       '.',
       field('property', $.identifier),
     )),
 
     // Function call: func(args)
-    function_call: $ => prec(2, seq(
-      field('function', choice($.identifier, $.property_access)),
+    function_call: $ => prec.left(3, seq(
+      field('function', $._callable),
       '(',
       field('arguments', optional($.argument_list)),
       ')',
     )),
+
+    _callable: $ => choice(
+      $.identifier,
+      $.property_access,
+      $.function_call,
+    ),
 
     argument_list: $ => seq(
       $._expression,

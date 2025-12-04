@@ -1,6 +1,6 @@
 {
     "name": "tree-sitter-rsx",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "description": "Tree-sitter grammar for RSX language",
     "repository": "https://github.com/guobin211/tree-sitter-rsx",
     "license": "MIT",
@@ -8,8 +8,8 @@
         "name": "michael",
         "email": "michaelbguo@tencent.com"
     },
-    "main": "bindings/node",
-    "types": "bindings/node",
+    "main": "src/rsx-parser.js",
+    "types": "src/rsx-parser.d.ts",
     "keywords": [
         "incremental",
         "parsing",
@@ -19,7 +19,6 @@
     "files": [
         "grammar.js",
         "binding.gyp",
-        "prebuilds/**",
         "bindings/node/*",
         "queries/*",
         "src/**",
@@ -28,7 +27,9 @@
     "tree-sitter": [
         {
             "scope": "source.rsx",
-            "file-types": ["rsx"],
+            "file-types": [
+                "rsx"
+            ],
             "injection-regex": "^rsx$",
             "highlights": "queries/highlights.scm",
             "injections": "queries/injections.scm",
@@ -39,8 +40,13 @@
         "languages": [
             {
                 "id": "rsx",
-                "aliases": ["RSX", "rsx"],
-                "extensions": [".rsx"],
+                "aliases": [
+                    "RSX",
+                    "rsx"
+                ],
+                "extensions": [
+                    ".rsx"
+                ],
                 "configuration": "./language-configuration.json"
             }
         ],
@@ -70,7 +76,7 @@
     },
     "scripts": {
         "build": "tree-sitter generate",
-        "build-wasm": "tree-sitter build --wasm",
+        "build:wasm": "tree-sitter build --wasm",
         "test": "tree-sitter test",
         "parse": "tree-sitter parse",
         "test:node": "node test-parser.js"

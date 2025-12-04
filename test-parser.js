@@ -5,15 +5,15 @@ const parser = new RSXParser()
 
 console.log('=== RSX Parser 功能测试 ===\n')
 
-// Test 1: 单大括号条件指令
-console.log('测试 1: 单大括号条件指令 {#if}')
+// Test 1: 双大括号条件指令
+console.log('测试 1: 双大括号条件指令 {{#if}}')
 const test1 = `
 <template>
-    {#if count > 0}
+    {{#if count > 0}}
     <p>有数据</p>
-    {:else}
+    {{:else}}
     <p>无数据</p>
-    {/if}
+    {{/if}}
 </template>
 `
 const result1 = parser.parse(test1)
@@ -40,13 +40,13 @@ console.log('✓ 项目变量:', eachDirective1?.item)
 console.log('✓ 索引变量:', eachDirective1?.index)
 console.log()
 
-// Test 3: {#each} 循环指令
-console.log('测试 3: {#each} 循环指令')
+// Test 3: {{#each}} 循环指令
+console.log('测试 3: {{#each}} 循环指令')
 const test3 = `
 <template>
-    {#each items as item}
+    {{#each items as item}}
     <div>{{ item }}</div>
-    {/each}
+    {{/each}}
 </template>
 `
 const result3 = parser.parse(test3)
@@ -60,9 +60,9 @@ console.log()
 console.log('测试 4: 复杂二元表达式')
 const test4 = `
 <template>
-    {#if count > 0 && count < 100}
+    {{#if count > 0 && count < 100}}
     <p>范围内</p>
-    {/if}
+    {{/if}}
 </template>
 `
 const result4 = parser.parse(test4)
@@ -90,9 +90,9 @@ console.log()
 console.log('测试 6: 一元表达式')
 const test6 = `
 <template>
-    {#if !isHidden}
+    {{#if !isHidden}}
     <p>显示</p>
-    {/if}
+    {{/if}}
 </template>
 `
 const result6 = parser.parse(test6)

@@ -405,7 +405,8 @@ class RSXParser {
         }
 
         // 最后处理文本插值 {{ expression }}（必须在结构化指令之后）
-        processedContent = processedContent.replace(/\{\{\s*([^}#@/]+?)\s*\}\}/g, (match, expression, offset) => {
+        // 排除指令标记: {{#...}}, {{/...}}, {{:...}}, {{@...}}
+        processedContent = processedContent.replace(/\{\{\s*([^}#@/:][^}]*?)\s*\}\}/g, (match, expression, offset) => {
             const trimmedExpr = expression.trim()
             // 跳过空表达式
             if (!trimmedExpr) {
@@ -673,8 +674,8 @@ class RSXParser {
             return `<!-- RAW_HTML_${directives.length - 1} -->`
         })
 
-        // 处理文本插值
-        processedContent = processedContent.replace(/\{\{\s*([^}#@/]+?)\s*\}\}/g, (match, expression, offset) => {
+        // 处理文本插值（排除指令标记）
+        processedContent = processedContent.replace(/\{\{\s*([^}#@/:][^}]*?)\s*\}\}/g, (match, expression, offset) => {
             const trimmedExpr = expression.trim()
             if (!trimmedExpr) {
                 return match
@@ -787,75 +788,268 @@ class RSXParser {
             parts: []
         }
 
-        // 检查是否是条件表达式 (三元运算符)
-        if (expression.includes('?') && expression.includes(':')) {
-            const ternaryMatch = expression.match(/^(.+?)\s*\?\s*(.+?)\s*:\s*(.+)$/)
-            if (ternaryMatch) {
-                result.type = 'conditional'
-                result.condition = ternaryMatch[1].trim()
-                result.trueValue = ternaryMatch[2].trim()
-                result.falseValue = ternaryMatch[3].trim()
-                return result
-            }
-        }
-
-        // 检查是否是函数调用
-        if (expression.includes('(') && expression.includes(')')) {
-            const funcMatch = expression.match(/^([\w.]+)\((.*)\)$/)
-            if (funcMatch) {
-                result.type = 'function_call'
-                result.function = funcMatch[1]
-                result.arguments = funcMatch[2] ? funcMatch[2].split(',').map((arg) => arg.trim()) : []
-                return result
-            }
-        }
-
-        // 检查是否是二元表达式（按优先级从低到高）
-        for (const { ops, name } of BINARY_OPERATORS) {
-            for (const op of ops) {
-                const opIndex = expression.indexOf(op)
-                if (opIndex !== -1) {
-                    const before = expression[opIndex - 1]
-                    const after = expression[opIndex + op.length]
-                    if ((op === '>' || op === '<') && (after === '=' || before === '=')) {
-                        continue
-                    }
-                    if ((op === '=' || op === '!') && after !== '=') {
-                        continue
-                    }
-
-                    const parts = expression.split(op)
-                    if (parts.length >= 2) {
-                        result.type = 'binary_expression'
-                        result.operator = op
-                        result.operatorType = name
-                        result.left = parts[0].trim()
-                        result.right = parts.slice(1).join(op).trim()
-                        return result
-                    }
-                }
-            }
-        }
-
-        // 检查是否是一元表达式
-        if (expression.startsWith('!') || expression.startsWith('-')) {
-            result.type = 'unary_expression'
-            result.operator = expression[0]
-            result.operand = expression.slice(1).trim()
+        const trimmed = expression.trim()
+        if (!trimmed) {
             return result
         }
 
-        // 检查是否是属性访问
-        if (expression.includes('.')) {
+        // 检查是否是条件表达式 (三元运算符) - 需要处理嵌套括号
+        const ternaryResult = this.parseTernaryExpression(trimmed)
+        if (ternaryResult) {
+            return ternaryResult
+        }
+
+        // 检查是否是二元表达式（按优先级从低到高）
+        const binaryResult = this.parseBinaryExpression(trimmed)
+        if (binaryResult) {
+            return binaryResult
+        }
+
+        // 检查是否是一元表达式
+        if (trimmed.startsWith('!') || (trimmed.startsWith('-') && trimmed.length > 1 && !/^\d/.test(trimmed[1]))) {
+            result.type = 'unary_expression'
+            result.operator = trimmed[0]
+            result.operand = trimmed.slice(1).trim()
+            result.parsedOperand = this.parseExpression(result.operand)
+            return result
+        }
+
+        // 检查是否是函数调用或链式调用 (如 obj.method() 或 func())
+        const callResult = this.parseCallExpression(trimmed)
+        if (callResult) {
+            return callResult
+        }
+
+        // 检查是否是属性访问 (不含函数调用)
+        if (trimmed.includes('.') && !trimmed.includes('(')) {
             result.type = 'property_access'
-            result.parts = expression.split('.')
+            result.parts = trimmed.split('.')
+            result.object = result.parts.slice(0, -1).join('.')
+            result.property = result.parts[result.parts.length - 1]
+            return result
+        }
+
+        // 检查字面量
+        if (/^["'].*["']$/.test(trimmed)) {
+            result.type = 'string_literal'
+            result.value = trimmed.slice(1, -1)
+            return result
+        }
+
+        if (/^\d+(\.\d+)?$/.test(trimmed)) {
+            result.type = 'number_literal'
+            result.value = parseFloat(trimmed)
+            return result
+        }
+
+        if (trimmed === 'true' || trimmed === 'false') {
+            result.type = 'boolean_literal'
+            result.value = trimmed === 'true'
             return result
         }
 
         // 简单标识符
-        result.type = 'identifier'
-        result.name = expression
+        if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(trimmed)) {
+            result.type = 'identifier'
+            result.name = trimmed
+            return result
+        }
+
         return result
+    }
+
+    /**
+     * 解析三元表达式
+     * @param {string} expression - 表达式字符串
+     * @returns {Object|null} 解析结果
+     */
+    parseTernaryExpression(expression) {
+        let depth = 0
+        let questionIndex = -1
+
+        for (let i = 0; i < expression.length; i++) {
+            const char = expression[i]
+            if (char === '(' || char === '[' || char === '{') {
+                depth++
+            } else if (char === ')' || char === ']' || char === '}') {
+                depth--
+            } else if (char === '?' && depth === 0) {
+                questionIndex = i
+                break
+            }
+        }
+
+        if (questionIndex === -1) return null
+
+        // 找到对应的冒号
+        depth = 0
+        let colonIndex = -1
+        for (let i = questionIndex + 1; i < expression.length; i++) {
+            const char = expression[i]
+            if (char === '(' || char === '[' || char === '{') {
+                depth++
+            } else if (char === ')' || char === ']' || char === '}') {
+                depth--
+            } else if (char === ':' && depth === 0) {
+                colonIndex = i
+                break
+            }
+        }
+
+        if (colonIndex === -1) return null
+
+        return {
+            type: 'conditional',
+            raw: expression,
+            condition: expression.substring(0, questionIndex).trim(),
+            trueValue: expression.substring(questionIndex + 1, colonIndex).trim(),
+            falseValue: expression.substring(colonIndex + 1).trim()
+        }
+    }
+
+    /**
+     * 解析二元表达式
+     * @param {string} expression - 表达式字符串
+     * @returns {Object|null} 解析结果
+     */
+    parseBinaryExpression(expression) {
+        // 按优先级从低到高查找运算符
+        for (const { ops, name } of BINARY_OPERATORS) {
+            for (const op of ops) {
+                const index = this.findOperatorIndex(expression, op)
+                if (index !== -1) {
+                    const left = expression.substring(0, index).trim()
+                    const right = expression.substring(index + op.length).trim()
+
+                    if (left && right) {
+                        return {
+                            type: 'binary_expression',
+                            raw: expression,
+                            operator: op,
+                            operatorType: name,
+                            left: left,
+                            right: right,
+                            parsedLeft: this.parseExpression(left),
+                            parsedRight: this.parseExpression(right)
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    /**
+     * 在表达式中查找运算符位置（考虑括号嵌套）
+     * @param {string} expression - 表达式字符串
+     * @param {string} op - 运算符
+     * @returns {number} 运算符位置，未找到返回 -1
+     */
+    findOperatorIndex(expression, op) {
+        let depth = 0
+
+        for (let i = 0; i < expression.length - op.length + 1; i++) {
+            const char = expression[i]
+            if (char === '(' || char === '[' || char === '{') {
+                depth++
+            } else if (char === ')' || char === ']' || char === '}') {
+                depth--
+            } else if (depth === 0 && expression.substring(i, i + op.length) === op) {
+                // 确保不是更长运算符的一部分
+                const before = i > 0 ? expression[i - 1] : ''
+                const after = i + op.length < expression.length ? expression[i + op.length] : ''
+
+                // 排除 >= <= == != && || 的部分匹配
+                if (op === '>' && after === '=') continue
+                if (op === '<' && after === '=') continue
+                if (op === '=' && (before === '!' || before === '=' || before === '>' || before === '<' || after === '=')) continue
+                if (op === '!' && after === '=') continue
+                if (op === '&' && (before === '&' || after === '&')) continue
+                if (op === '|' && (before === '|' || after === '|')) continue
+
+                return i
+            }
+        }
+        return -1
+    }
+
+    /**
+     * 解析函数调用或链式调用表达式
+     * @param {string} expression - 表达式字符串
+     * @returns {Object|null} 解析结果
+     */
+    parseCallExpression(expression) {
+        // 从右向左找到最外层的函数调用括号
+        let depth = 0
+        let lastOpenParen = -1
+
+        for (let i = expression.length - 1; i >= 0; i--) {
+            const char = expression[i]
+            if (char === ')') {
+                depth++
+            } else if (char === '(') {
+                depth--
+                if (depth === 0) {
+                    lastOpenParen = i
+                    break
+                }
+            }
+        }
+
+        if (lastOpenParen === -1 || expression[expression.length - 1] !== ')') {
+            return null
+        }
+
+        const funcPart = expression.substring(0, lastOpenParen).trim()
+        const argsPart = expression.substring(lastOpenParen + 1, expression.length - 1).trim()
+
+        if (!funcPart) return null
+
+        // 解析参数列表
+        const args = this.parseArgumentList(argsPart)
+
+        return {
+            type: 'function_call',
+            raw: expression,
+            function: funcPart,
+            parsedFunction: this.parseExpression(funcPart),
+            arguments: args,
+            parsedArguments: args.map(arg => this.parseExpression(arg))
+        }
+    }
+
+    /**
+     * 解析参数列表
+     * @param {string} argsString - 参数字符串
+     * @returns {Array} 参数数组
+     */
+    parseArgumentList(argsString) {
+        if (!argsString.trim()) return []
+
+        const args = []
+        let depth = 0
+        let current = ''
+
+        for (const char of argsString) {
+            if (char === '(' || char === '[' || char === '{') {
+                depth++
+                current += char
+            } else if (char === ')' || char === ']' || char === '}') {
+                depth--
+                current += char
+            } else if (char === ',' && depth === 0) {
+                args.push(current.trim())
+                current = ''
+            } else {
+                current += char
+            }
+        }
+
+        if (current.trim()) {
+            args.push(current.trim())
+        }
+
+        return args
     }
 
     /**
