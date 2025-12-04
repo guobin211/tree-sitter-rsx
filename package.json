@@ -1,6 +1,6 @@
 {
     "name": "tree-sitter-rsx",
-    "version": "0.1.9",
+    "version": "0.2.0",
     "description": "Tree-sitter grammar for RSX language",
     "repository": "https://github.com/guobin211/tree-sitter-rsx",
     "license": "MIT",
