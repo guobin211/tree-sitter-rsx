@@ -1,6 +1,6 @@
 {
     "name": "tree-sitter-rsx",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "Tree-sitter grammar for RSX language",
     "repository": "https://github.com/guobin211/tree-sitter-rsx",
     "license": "MIT",
@@ -57,6 +57,13 @@
             }
         ]
     },
+    "dependencies": {
+        "tree-sitter": "^0.21.1",
+        "tree-sitter-html": "^0.23.2",
+        "tree-sitter-rust": "^0.21.0",
+        "tree-sitter-scss": "^1.0.0",
+        "tree-sitter-typescript": "^0.21.2"
+    },
     "devDependencies": {
         "@types/node": "^22.19.1",
         "tree-sitter-cli": "^0.24.0"
@@ -65,7 +72,8 @@
         "build": "tree-sitter generate",
         "build-wasm": "tree-sitter build --wasm",
         "test": "tree-sitter test",
-        "parse": "tree-sitter parse"
+        "parse": "tree-sitter parse",
+        "test:node": "node test-parser.js"
     },
     "peerDependencies": {
         "tree-sitter": "^0.21.0"
