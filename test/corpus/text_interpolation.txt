@@ -1,0 +1,121 @@
+================================================================================
+Simple identifier interpolation
+================================================================================
+
+<template>
+<p>{{ message }}</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (identifier)))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Property access interpolation
+================================================================================
+
+<template>
+<p>{{ user.name }}</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (property_access
+              (identifier)
+              (identifier))))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Deep property access interpolation
+================================================================================
+
+<template>
+<p>{{ user.profile.email }}</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (property_access
+              (property_access
+                (identifier)
+                (identifier))
+              (identifier))))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Function call interpolation
+================================================================================
+
+<template>
+<p>{{ formatDate(date) }}</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (function_call
+              (identifier)
+              (argument_list
+                (identifier)))))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Ternary expression interpolation
+================================================================================
+
+<template>
+<p>{{ isActive ? 'Active' : 'Inactive' }}</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (conditional_expression
+              (identifier)
+              (string_literal)
+              (string_literal))))
+        (tag_name))
+      (template_text))))

@@ -1,0 +1,128 @@
+================================================================================
+Self-closing HTML element
+================================================================================
+
+<template>
+<img src="test.png" />
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content))))
+      (template_text))))
+
+================================================================================
+HTML element with attributes
+================================================================================
+
+<template>
+<div class="container" id="main">text</div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (template_body
+          (template_text))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+HTML attribute with interpolation
+================================================================================
+
+<template>
+<div class="{{ isActive ? 'active' : 'inactive' }}">text</div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content
+              (template_interpolation
+                (conditional_expression
+                  (identifier)
+                  (string_literal)
+                  (string_literal))))))
+        (template_body
+          (template_text))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Boolean attribute
+================================================================================
+
+<template>
+<input type="checkbox" disabled />
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (html_attribute
+          (attribute_name)))
+      (template_text))))
+
+================================================================================
+HTML comment
+================================================================================
+
+<template>
+<!-- This is a comment -->
+<div>text</div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (template_comment)
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_text))
+        (tag_name))
+      (template_text))))

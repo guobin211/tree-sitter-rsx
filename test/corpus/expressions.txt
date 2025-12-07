@@ -1,0 +1,358 @@
+================================================================================
+Comparison operators
+================================================================================
+
+<template>
+{{@if a > b}}<p>gt</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (identifier))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Strict equality operators
+================================================================================
+
+<template>
+{{@if a === b}}<p>eq</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (identifier))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Logical operators
+================================================================================
+
+<template>
+{{@if a && b}}<p>and</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (identifier))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Arithmetic operators
+================================================================================
+
+<template>
+<p>{{ a + b }}</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (binary_expression
+              (identifier)
+              (identifier))))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Modulo operator
+================================================================================
+
+<template>
+<p>{{ a % b }}</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (binary_expression
+              (identifier)
+              (identifier))))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Unary not operator
+================================================================================
+
+<template>
+{{@if !isActive}}<p>not active</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (unary_expression
+          (identifier))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Unary negative operator
+================================================================================
+
+<template>
+<p>{{ -value }}</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (unary_expression
+              (identifier))))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Parenthesized expressions
+================================================================================
+
+<template>
+{{@if (a && b) || c}}<p>grouped</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (parenthesized_expression
+            (binary_expression
+              (identifier)
+              (identifier)))
+          (identifier))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Number literals
+================================================================================
+
+<template>
+{{@if count > 0}}<p>positive</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (number_literal))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Decimal number literals
+================================================================================
+
+<template>
+{{@if price >= 99.99}}<p>premium</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (number_literal))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Double quoted string literals
+================================================================================
+
+<template>
+{{@if status == "active"}}<p>active</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (string_literal))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Single quoted string literals
+================================================================================
+
+<template>
+{{@if role == 'admin'}}<p>admin</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (string_literal))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Boolean true literal
+================================================================================
+
+<template>
+{{@if isEnabled == true}}<p>enabled</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (boolean_literal))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))
+
+================================================================================
+Boolean false literal
+================================================================================
+
+<template>
+{{@if isDisabled == false}}<p>not disabled</p>{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (boolean_literal))
+        (template_body
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))))
+      (template_text))))

@@ -1,0 +1,212 @@
+================================================================================
+Simple if directive
+================================================================================
+
+<template>
+{{@if isActive}}
+<p>Active</p>
+{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (identifier)
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))
+          (template_text)))
+      (template_text))))
+
+================================================================================
+If-else directive
+================================================================================
+
+<template>
+{{@if isLoggedIn}}
+<p>Welcome!</p>
+{{:else}}
+<p>Please log in.</p>
+{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (identifier)
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))
+          (template_text))
+        (else_clause
+          (template_body
+            (template_text)
+            (html_element
+              (tag_name)
+              (template_body
+                (template_text))
+              (tag_name))
+            (template_text))))
+      (template_text))))
+
+================================================================================
+If-else if-else directive with space
+================================================================================
+
+<template>
+{{@if score >= 90}}
+<p>A</p>
+{{:else if score >= 80}}
+<p>B</p>
+{{:else}}
+<p>C</p>
+{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (number_literal))
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))
+          (template_text))
+        (else_if_clause
+          (binary_expression
+            (identifier)
+            (number_literal))
+          (template_body
+            (template_text)
+            (html_element
+              (tag_name)
+              (template_body
+                (template_text))
+              (tag_name))
+            (template_text)))
+        (else_clause
+          (template_body
+            (template_text)
+            (html_element
+              (tag_name)
+              (template_body
+                (template_text))
+              (tag_name))
+            (template_text))))
+      (template_text))))
+
+================================================================================
+If-elseif-else directive without space
+================================================================================
+
+<template>
+{{@if level >= 5}}
+<span>Gold</span>
+{{:elseif level >= 3}}
+<span>Silver</span>
+{{:else}}
+<span>Bronze</span>
+{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (identifier)
+          (number_literal))
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))
+          (template_text))
+        (else_if_clause
+          (binary_expression
+            (identifier)
+            (number_literal))
+          (template_body
+            (template_text)
+            (html_element
+              (tag_name)
+              (template_body
+                (template_text))
+              (tag_name))
+            (template_text)))
+        (else_clause
+          (template_body
+            (template_text)
+            (html_element
+              (tag_name)
+              (template_body
+                (template_text))
+              (tag_name))
+            (template_text))))
+      (template_text))))
+
+================================================================================
+Complex condition with logical operators
+================================================================================
+
+<template>
+{{@if user.age >= 18 && user.isVerified}}
+<p>Verified adult</p>
+{{/if}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (if_directive
+        (binary_expression
+          (binary_expression
+            (property_access
+              (identifier)
+              (identifier))
+            (number_literal))
+          (property_access
+            (identifier)
+            (identifier)))
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))
+          (template_text)))
+      (template_text))))

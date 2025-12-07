@@ -1,0 +1,142 @@
+================================================================================
+Minimal template only
+================================================================================
+
+<template>
+    <div>
+        <h1>Minimal RSX</h1>
+    </div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))
+          (template_text))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Complete RSX file with all sections
+================================================================================
+
+---
+use rsx::{Request, Response};
+
+async fn get_server_side_props(req: Request) -> Response {
+    Response::json!({})
+}
+---
+
+<script>
+const { message } = defineProps<{ message: string }>()
+</script>
+
+<template>
+    <div>{{ message }}</div>
+</template>
+
+<style>
+.container { padding: 20px; }
+</style>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (rust_section
+    (rust_content))
+  (script_section
+    (script_content))
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_interpolation
+            (identifier)))
+        (tag_name))
+      (template_text)))
+  (style_section
+    (style_content)))
+
+================================================================================
+Template and style only
+================================================================================
+
+<template>
+    <div class="container">
+        <h1>Hello</h1>
+    </div>
+</template>
+
+<style>
+.container { padding: 20px; }
+</style>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))
+          (template_text))
+        (tag_name))
+      (template_text)))
+  (style_section
+    (style_content)))
+
+================================================================================
+Rust and template only
+================================================================================
+
+---
+use rsx::{Request, Response};
+
+async fn get_server_side_props(req: Request) -> Response {
+    Response::json!({})
+}
+---
+
+<template>
+    <div>Hello</div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (rust_section
+    (rust_content))
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_text))
+        (tag_name))
+      (template_text))))

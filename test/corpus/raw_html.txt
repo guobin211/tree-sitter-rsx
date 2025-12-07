@@ -1,0 +1,70 @@
+================================================================================
+Raw HTML directive with identifier
+================================================================================
+
+<template>
+<div>{{@html rawContent}}</div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (raw_html_directive
+            (identifier)))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Raw HTML directive with property access
+================================================================================
+
+<template>
+<div>{{@html article.content}}</div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (raw_html_directive
+            (property_access
+              (identifier)
+              (identifier))))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Raw HTML directive with function call
+================================================================================
+
+<template>
+<div>{{@html renderMarkdown(content)}}</div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (raw_html_directive
+            (function_call
+              (identifier)
+              (argument_list
+                (identifier)))))
+        (tag_name))
+      (template_text))))

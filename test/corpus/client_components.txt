@@ -1,0 +1,144 @@
+================================================================================
+Self-closing client component
+================================================================================
+
+<template>
+<ReactApp client="react" users="{{ users }}" />
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (client_component
+        (component_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content
+              (template_interpolation
+                (identifier))))))
+      (template_text))))
+
+================================================================================
+Vue client component
+================================================================================
+
+<template>
+<VueChart client="vue" data="{{ chartData }}" />
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (client_component
+        (component_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content
+              (template_interpolation
+                (identifier))))))
+      (template_text))))
+
+================================================================================
+Svelte client component
+================================================================================
+
+<template>
+<SvelteWidget client="svelte" items="{{ items }}" />
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (client_component
+        (component_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content
+              (template_interpolation
+                (identifier))))))
+      (template_text))))
+
+================================================================================
+Client component with body
+================================================================================
+
+<template>
+<ReactApp client="react">
+<p>Child</p>
+</ReactApp>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (client_component
+        (component_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_text))
+            (tag_name))
+          (template_text))
+        (component_name))
+      (template_text))))
+
+================================================================================
+Client component with function prop
+================================================================================
+
+<template>
+<ReactApp client="react" onClick="{{ handleClick }}" />
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (client_component
+        (component_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content)))
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value_content
+              (template_interpolation
+                (identifier))))))
+      (template_text))))

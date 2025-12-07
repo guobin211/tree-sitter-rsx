@@ -1,0 +1,96 @@
+================================================================================
+Simple each loop
+================================================================================
+
+<template>
+{{@each items as item}}
+<p>{{ item }}</p>
+{{/each}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (each_directive
+        (identifier)
+        (identifier)
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_interpolation
+                (identifier)))
+            (tag_name))
+          (template_text)))
+      (template_text))))
+
+================================================================================
+Each loop with index
+================================================================================
+
+<template>
+{{@each users as user, index}}
+<li>{{ user.name }}</li>
+{{/each}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (each_directive
+        (identifier)
+        (identifier)
+        (identifier)
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_interpolation
+                (property_access
+                  (identifier)
+                  (identifier))))
+            (tag_name))
+          (template_text)))
+      (template_text))))
+
+================================================================================
+Each loop with property access iterable
+================================================================================
+
+<template>
+{{@each category.items as item}}
+<p>{{ item.name }}</p>
+{{/each}}
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (each_directive
+        (property_access
+          (identifier)
+          (identifier))
+        (identifier)
+        (template_body
+          (template_text)
+          (html_element
+            (tag_name)
+            (template_body
+              (template_interpolation
+                (property_access
+                  (identifier)
+                  (identifier))))
+            (tag_name))
+          (template_text)))
+      (template_text))))
