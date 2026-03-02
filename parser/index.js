@@ -124,6 +124,7 @@ class RSXParser {
                     content: sections.template.content,
                     ast: templateResult.ast,
                     directives: templateResult.directives,
+                    processedContent: templateResult.processedContent,
                     errors: templateErrors
                 });
                 result.errors.push(...templateErrors);
@@ -337,11 +338,13 @@ class RSXParser {
         const result = {
             ast: null,
             directives: [],
+            processedContent: '',
             errors: []
         };
 
         // 先处理模板指令
         const processedContent = this.preprocessTemplate(content, result.directives);
+        result.processedContent = processedContent;
 
         try {
             // 使用HTML解析器解析处理后的内容
