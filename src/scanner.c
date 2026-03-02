@@ -1,6 +1,4 @@
 #include "tree_sitter/parser.h"
-#include <string.h>
-#include <wctype.h>
 
 enum TokenType {
   RUST_CONTENT,
@@ -14,42 +12,59 @@ void *tree_sitter_rsx_external_scanner_create() {
 }
 
 void tree_sitter_rsx_external_scanner_destroy(void *payload) {
+  (void)payload;
 }
 
 unsigned tree_sitter_rsx_external_scanner_serialize(void *payload, char *buffer) {
+  (void)payload;
+  (void)buffer;
   return 0;
 }
 
 void tree_sitter_rsx_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
+  (void)payload;
+  (void)buffer;
+  (void)length;
 }
 
 static void advance(TSLexer *lexer) {
   lexer->advance(lexer, false);
 }
 
-static void skip(TSLexer *lexer) {
-  lexer->advance(lexer, true);
+static bool is_line_break(int32_t ch) {
+  return ch == '\n' || ch == '\r';
 }
 
 // Scan rust content until ---
 static bool scan_rust_content(TSLexer *lexer) {
   bool found_content = false;
+  bool at_line_start = true;
   
   while (lexer->lookahead != 0) {
-    if (lexer->lookahead == '-') {
+    // Frontmatter end must be a standalone line delimiter.
+    if (at_line_start && lexer->lookahead == '-') {
       lexer->mark_end(lexer);
       advance(lexer);
       if (lexer->lookahead == '-') {
         advance(lexer);
         if (lexer->lookahead == '-') {
-          // Found ---, don't consume it
-          return found_content;
+          advance(lexer);
+          if (lexer->lookahead == 0 || is_line_break(lexer->lookahead)) {
+            // Found closing line `---`, don't consume it.
+            return found_content;
+          }
         }
       }
+
       found_content = true;
+      at_line_start = false;
+      lexer->mark_end(lexer);
     } else {
+      int32_t current = lexer->lookahead;
       advance(lexer);
       found_content = true;
+      at_line_start = is_line_break(current);
+      lexer->mark_end(lexer);
     }
   }
   
@@ -89,10 +104,13 @@ static bool scan_script_content(TSLexer *lexer) {
           }
         }
       }
+
       found_content = true;
+      lexer->mark_end(lexer);
     } else {
       advance(lexer);
       found_content = true;
+      lexer->mark_end(lexer);
     }
   }
   
@@ -129,10 +147,13 @@ static bool scan_style_content(TSLexer *lexer) {
           }
         }
       }
+
       found_content = true;
+      lexer->mark_end(lexer);
     } else {
       advance(lexer);
       found_content = true;
+      lexer->mark_end(lexer);
     }
   }
   
@@ -144,16 +165,25 @@ static bool scan_template_text(TSLexer *lexer) {
   bool found_content = false;
   
   while (lexer->lookahead != 0) {
-    // Stop at < (HTML tag) or { (interpolation/directive) or end of template
-    if (lexer->lookahead == '<' || lexer->lookahead == '{') {
+    // Stop at < (HTML tag) or {{ (interpolation/directive) or end of template.
+    if (lexer->lookahead == '<') {
       break;
     }
-    
+
+    if (lexer->lookahead == '{') {
+      lexer->mark_end(lexer);
+      advance(lexer);
+      if (lexer->lookahead == '{') {
+        break;
+      }
+
+      found_content = true;
+      lexer->mark_end(lexer);
+      continue;
+    }
+
     advance(lexer);
     found_content = true;
-  }
-  
-  if (found_content) {
     lexer->mark_end(lexer);
   }
   
@@ -165,12 +195,7 @@ bool tree_sitter_rsx_external_scanner_scan(
   TSLexer *lexer,
   const bool *valid_symbols
 ) {
-  // Skip leading whitespace for content tokens
-  if (valid_symbols[RUST_CONTENT] || valid_symbols[SCRIPT_CONTENT] || valid_symbols[STYLE_CONTENT]) {
-    while (iswspace(lexer->lookahead)) {
-      skip(lexer);
-    }
-  }
+  (void)payload;
 
   if (valid_symbols[RUST_CONTENT]) {
     if (scan_rust_content(lexer)) {

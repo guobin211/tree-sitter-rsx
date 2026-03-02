@@ -1,0 +1,49 @@
+================================================================================
+Template text can contain single brace
+================================================================================
+
+<template>
+<p>hello { world</p>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_text))
+        (tag_name))
+      (template_text))))
+
+================================================================================
+Rust content ignores --- inside string literal
+================================================================================
+
+---
+fn demo() {
+    let marker = "--- not a delimiter";
+}
+---
+
+<template>
+    <div>ok</div>
+</template>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (rust_section
+    (rust_content))
+  (template_section
+    (template_body
+      (template_text)
+      (html_element
+        (tag_name)
+        (template_body
+          (template_text))
+        (tag_name))
+      (template_text))))

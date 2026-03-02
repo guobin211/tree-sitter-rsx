@@ -1,21 +1,48 @@
 {
-    "name": "tree-sitter-rsx",
-    "version": "0.3.1",
-    "description": "Tree-sitter grammar for RSX language",
-    "repository": "https://github.com/guobin211/tree-sitter-rsx",
-    "license": "MIT",
     "author": {
-        "name": "michael",
-        "email": "michaelbguo@tencent.com"
+        "email": "michaelbguo@tencent.com",
+        "name": "michael"
     },
-    "main": "bindings/node",
-    "types": "bindings/node/index.d.ts",
-    "keywords": [
-        "incremental",
-        "parsing",
-        "tree-sitter",
-        "rsx"
-    ],
+    "contributes": {
+        "grammars": [
+            {
+                "embeddedLanguages": {
+                    "meta.section.rust.rsx": "rust",
+                    "meta.section.script.rsx": "typescript",
+                    "meta.section.style.rsx": "scss"
+                },
+                "language": "rsx",
+                "path": "./rsx.tmLanguage.json",
+                "scopeName": "source.rsx"
+            }
+        ],
+        "languages": [
+            {
+                "aliases": [
+                    "RSX",
+                    "rsx"
+                ],
+                "configuration": "./language-configuration.json",
+                "extensions": [
+                    ".rsx"
+                ],
+                "id": "rsx"
+            }
+        ]
+    },
+    "dependencies": {
+        "nan": "^2.18.0",
+        "tree-sitter": "^0.21.1",
+        "tree-sitter-html": "^0.23.2",
+        "tree-sitter-rust": "^0.21.0",
+        "tree-sitter-scss": "^1.0.0",
+        "tree-sitter-typescript": "^0.21.2"
+    },
+    "description": "Tree-sitter grammar for RSX language",
+    "devDependencies": {
+        "@types/node": "^22.19.1",
+        "tree-sitter-cli": "^0.24.0"
+    },
     "files": [
         "grammar.js",
         "binding.gyp",
@@ -25,64 +52,15 @@
         "src/**",
         "*.wasm"
     ],
-    "tree-sitter": [
-        {
-            "scope": "source.rsx",
-            "file-types": [
-                "rsx"
-            ],
-            "injection-regex": "^rsx$",
-            "highlights": "queries/highlights.scm",
-            "injections": "queries/injections.scm",
-            "locals": "queries/locals.scm"
-        }
+    "keywords": [
+        "incremental",
+        "parsing",
+        "tree-sitter",
+        "rsx"
     ],
-    "contributes": {
-        "languages": [
-            {
-                "id": "rsx",
-                "aliases": [
-                    "RSX",
-                    "rsx"
-                ],
-                "extensions": [
-                    ".rsx"
-                ],
-                "configuration": "./language-configuration.json"
-            }
-        ],
-        "grammars": [
-            {
-                "language": "rsx",
-                "scopeName": "source.rsx",
-                "path": "./rsx.tmLanguage.json",
-                "embeddedLanguages": {
-                    "meta.section.rust.rsx": "rust",
-                    "meta.section.script.rsx": "typescript",
-                    "meta.section.style.rsx": "scss"
-                }
-            }
-        ]
-    },
-    "dependencies": {
-        "tree-sitter": "^0.21.1",
-        "tree-sitter-html": "^0.23.2",
-        "tree-sitter-rust": "^0.21.0",
-        "tree-sitter-scss": "^1.0.0",
-        "tree-sitter-typescript": "^0.21.2",
-        "nan": "^2.18.0"
-    },
-    "devDependencies": {
-        "@types/node": "^22.19.1",
-        "tree-sitter-cli": "^0.24.0"
-    },
-    "scripts": {
-        "build": "tree-sitter generate",
-        "build:wasm": "tree-sitter build --wasm",
-        "build:node": "node-gyp rebuild",
-        "test": "tree-sitter test",
-        "parse": "tree-sitter parse"
-    },
+    "license": "MIT",
+    "main": "bindings/node",
+    "name": "tree-sitter-rsx",
     "peerDependencies": {
         "tree-sitter": "^0.21.0"
     },
@@ -90,5 +68,27 @@
         "tree-sitter": {
             "optional": true
         }
-    }
+    },
+    "repository": "https://github.com/guobin211/tree-sitter-rsx",
+    "scripts": {
+        "build": "tree-sitter generate",
+        "build:node": "node-gyp rebuild",
+        "build:wasm": "tree-sitter build --wasm",
+        "parse": "tree-sitter parse",
+        "test": "tree-sitter test"
+    },
+    "tree-sitter": [
+        {
+            "file-types": [
+                "rsx"
+            ],
+            "highlights": "queries/highlights.scm",
+            "injection-regex": "^rsx$",
+            "injections": "queries/injections.scm",
+            "locals": "queries/locals.scm",
+            "scope": "source.rsx"
+        }
+    ],
+    "types": "bindings/node/index.d.ts",
+    "version": "0.3.2"
 }
