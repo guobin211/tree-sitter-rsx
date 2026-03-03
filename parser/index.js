@@ -169,7 +169,9 @@ class RSXParser {
         result.sections.sort((left, right) => left.start - right.start);
 
         // 执行结构验证
-        const validationErrors = this.validateRSXStructure(result);
+        const validationResults = this.validateRSXStructure(result);
+        // Only add error/warning severity to errors; info-level items are hints, not errors
+        const validationErrors = validationResults.filter((v) => v.severity !== 'info');
         result.errors = result.errors.concat(validationErrors);
 
         return result;
@@ -370,6 +372,15 @@ class RSXParser {
     preprocessTemplate(content, directives) {
         let processedContent = content;
 
+        // 保护 HTML 注释：将注释暂存，用占位符替换，
+        // 避免注释内部的 {{ }} 被当作模板指令处理
+        const commentPlaceholders = [];
+        processedContent = processedContent.replace(/<!--[\s\S]*?-->/g, (match, offset) => {
+            const idx = commentPlaceholders.length;
+            commentPlaceholders.push(match);
+            return `\x00COMMENT_${idx}\x00`;
+        });
+
         // 递归处理所有模板指令，直到没有更多指令需要处理
         let hasChanges = true;
         let iterations = 0;
@@ -401,6 +412,9 @@ class RSXParser {
             iterations++;
         }
 
+        // 处理客户端组件（必须在文本插值之前，因为插值占位符中的 > 会破坏组件标签匹配）
+        processedContent = this.processClientComponents(processedContent, directives);
+
         // 最后处理文本插值 {{ expression }}（必须在结构化指令之后）
         // 排除指令标记: {{/...}}, {{:...}}, {{@...}}
         processedContent = processedContent.replace(/\{\{\s*([^}@/:][^}]*?)\s*\}\}/g, (match, expression, offset) => {
@@ -421,8 +435,10 @@ class RSXParser {
             return `<!-- INTERPOLATION_${directives.length - 1} -->`;
         });
 
-        // 处理客户端组件
-        processedContent = this.processClientComponents(processedContent, directives);
+        // 还原 HTML 注释占位符
+        processedContent = processedContent.replace(/\x00COMMENT_(\d+)\x00/g, (match, idx) => {
+            return commentPlaceholders[Number(idx)];
+        });
 
         return processedContent;
     }
